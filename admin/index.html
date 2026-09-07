@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Panel · Raíz Segura</title>
+<style>
+  :root{
+    --tinta:#14201d; --papel:#f4f6f4; --acento:#2D6A4F; --azul:#1B2B4B;
+    --acento-suave: color-mix(in srgb, var(--acento) 9%, white);
+    --borde: rgba(0,0,0,.1);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--papel);color:var(--tinta);line-height:1.5}
+  .caja{max-width:960px;margin:0 auto;padding:28px 20px 80px}
+  h1{font-size:22px;margin-bottom:4px}
+  .sub{font-size:13.5px;opacity:.6;margin-bottom:24px}
+
+  #pantalla-login{max-width:360px;margin:80px auto;padding:28px;background:#fff;border:1px solid var(--borde);border-radius:14px}
+  #pantalla-login h2{font-size:18px;margin-bottom:14px}
+  #pantalla-login input{width:100%;padding:11px 13px;border-radius:9px;border:1px solid var(--borde);font:inherit;margin-bottom:10px}
+  #error-login{color:#b71c1c;font-size:13px;margin-bottom:10px;display:none}
+
+  .btn{padding:10px 18px;border-radius:9px;border:none;background:var(--acento);color:#fff;font:inherit;font-weight:600;cursor:pointer;font-size:14px}
+  .btn.secundario{background:#fff;color:var(--acento);border:1px solid var(--acento)}
+  .btn.peligro{background:#fff;color:#b71c1c;border:1px solid #b71c1c}
+  .btn:disabled{opacity:.5;cursor:default}
+
+  #app{display:none}
+  .barra-superior{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;flex-wrap:wrap;gap:10px}
+
+  table{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--borde);border-radius:10px;overflow:hidden;font-size:13.5px}
+  th,td{padding:10px 12px;text-align:left;border-bottom:1px solid var(--borde)}
+  th{background:var(--acento-suave);font-size:11.5px;text-transform:uppercase;letter-spacing:.05em}
+  tr:last-child td{border-bottom:none}
+  .badge{display:inline-block;padding:3px 10px;border-radius:999px;font-size:11.5px;font-weight:700}
+  .badge.disponible{background:#e7f5ee;color:#1b5e3a}
+  .badge.otro{background:#eee;color:#555}
+  .acciones{display:flex;gap:6px}
+  .acciones .btn{padding:6px 12px;font-size:12.5px}
+
+  #tabla-vacia{padding:30px;text-align:center;opacity:.6;font-size:14px}
+
+  #fondo-form{position:fixed;inset:0;background:rgba(20,32,29,.5);display:none;align-items:flex-start;justify-content:center;padding:30px 16px;overflow-y:auto;z-index:50}
+  #fondo-form.abierto{display:flex}
+  #panel-form{background:#fff;border-radius:14px;max-width:720px;width:100%;padding:28px;margin-bottom:40px}
+  #panel-form h2{font-size:19px;margin-bottom:18px}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+  @media(max-width:600px){.grid2,.grid3{grid-template-columns:1fr}}
+  .campo{margin-bottom:12px}
+  .campo label{display:block;font-size:12px;font-weight:700;margin-bottom:5px;opacity:.75}
+  .campo input,.campo select,.campo textarea{
+    width:100%;padding:10px 12px;border-radius:8px;border:1px solid var(--borde);font:inherit;font-size:14px;
+  }
+  .campo textarea{resize:vertical;min-height:64px}
+  .pagos{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:12px}
+  .pagos label{display:flex;align-items:center;gap:6px;font-size:13.5px;font-weight:400}
+  .fila-botones-form{display:flex;gap:10px;justify-content:flex-end;margin-top:18px}
+  #mensaje-form{font-size:13.5px;margin-top:12px;padding:10px 12px;border-radius:8px;display:none}
+  #mensaje-form.error{background:#fdeaea;color:#9c2b2b;display:block}
+  #mensaje-form.ok{background:#e7f5ee;color:#0f5d3f;display:block}
+</style>
+</head>
+<body>
+
+<div id="pantalla-login">
+  <h2>Panel de Raíz Segura</h2>
+  <p id="error-login">Contraseña incorrecta.</p>
+  <input type="password" id="campo-clave" placeholder="Tu contraseña" autocomplete="current-password">
+  <button class="btn" id="boton-entrar" style="width:100%">Entrar</button>
+</div>
+
+<div id="app">
+  <div class="caja">
+    <h1>Tus propiedades</h1>
+    <p class="sub">Lo que marques "Disponible" aparece en el sitio público. Lo demás solo lo ves tú aquí.</p>
+
+    <div class="barra-superior">
+      <span></span>
+      <button class="btn" id="boton-nueva">+ Agregar propiedad</button>
+    </div>
+
+    <table id="tabla-propiedades">
+      <thead>
+        <tr>
+          <th>Referencia</th><th>Tipo</th><th>Ubicación</th><th>Precio</th><th>Estatus</th><th></th>
+        </tr>
+      </thead>
+      <tbody id="cuerpo-tabla"></tbody>
+    </table>
+    <div id="tabla-vacia" style="display:none">Todavía no tienes propiedades cargadas. Dale a "Agregar propiedad" para la primera.</div>
+  </div>
+</div>
+
+<div id="fondo-form">
+  <div id="panel-form">
+    <h2 id="titulo-form">Agregar propiedad</h2>
+    <form id="form-propiedad">
+      <input type="hidden" id="f-id">
+      <div class="grid3">
+        <div class="campo">
+          <label>Tipo de propiedad</label>
+          <input type="text" id="f-tipo" list="lista-tipos" placeholder="Casa, Departamento...">
+          <datalist id="lista-tipos">
+            <option value="Casa"><option value="Departamento"><option value="Terreno">
+            <option value="Bodega"><option value="Local comercial"><option value="Oficina">
+          </datalist>
+        </div>
+        <div class="campo">
+          <label>Operación</label>
+          <select id="f-operacion">
+            <option value="venta">Venta</option>
+            <option value="renta">Renta</option>
+          </select>
+        </div>
+        <div class="campo">
+          <label>Estatus</label>
+          <select id="f-disponibilidad">
+            <option value="DISPONIBLE">Disponible (se ve en el sitio)</option>
+            <option value="ENCONTRADA">Encontrada</option>
+            <option value="PENDIENTE_VALIDACION">Pendiente de validación</option>
+            <option value="VALIDADA">Validada</option>
+            <option value="NO_DISPONIBLE">No disponible</option>
+            <option value="COLABORACION_CONFIRMADA">Colaboración confirmada</option>
+            <option value="SIN_COLABORACION">Sin colaboración</option>
+            <option value="PENDIENTE_COMISION">Pendiente de comisión</option>
+            <option value="DESACTUALIZADA">Desactualizada</option>
+            <option value="VENDIDA">Vendida</option>
+            <option value="RENTADA">Rentada</option>
+            <option value="ARCHIVADA">Archivada</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="grid3">
+        <div class="campo"><label>Estado</label><input type="text" id="f-estado" placeholder="Querétaro"></div>
+        <div class="campo"><label>Municipio</label><input type="text" id="f-municipio" placeholder="El Marqués"></div>
+        <div class="campo"><label>Ciudad</label><input type="text" id="f-ciudad" placeholder="Querétaro"></div>
+      </div>
+      <div class="grid2">
+        <div class="campo"><label>Colonia</label><input type="text" id="f-colonia"></div>
+        <div class="campo"><label>Fraccionamiento / desarrollo</label><input type="text" id="f-desarrollo"></div>
+      </div>
+
+      <div class="grid3">
+        <div class="campo"><label>Precio publicado (MXN)</label><input type="number" id="f-precio" min="0"></div>
+        <div class="campo"><label>Terreno (m²)</label><input type="number" id="f-terreno" min="0"></div>
+        <div class="campo"><label>Construcción (m²)</label><input type="number" id="f-construccion" min="0"></div>
+      </div>
+      <div class="grid3">
+        <div class="campo"><label>Recámaras</label><input type="number" id="f-recamaras" min="0"></div>
+        <div class="campo"><label>Baños</label><input type="number" id="f-banos" min="0" step="0.5"></div>
+        <div class="campo"><label>Estacionamientos</label><input type="number" id="f-estacionamientos" min="0"></div>
+      </div>
+      <div class="grid2">
+        <div class="campo"><label>Antigüedad</label><input type="text" id="f-antiguedad" placeholder="Nueva, 5 años..."></div>
+        <div class="campo"><label>Amenidades (separadas por coma)</label><input type="text" id="f-amenidades" placeholder="Alberca, seguridad 24h, gimnasio"></div>
+      </div>
+
+      <div class="campo">
+        <label>Formas de pago que acepta</label>
+        <div class="pagos">
+          <label><input type="checkbox" value="Infonavit" class="chk-pago"> Infonavit</label>
+          <label><input type="checkbox" value="Fovissste" class="chk-pago"> Fovissste</label>
+          <label><input type="checkbox" value="Crédito bancario" class="chk-pago"> Crédito bancario</label>
+          <label><input type="checkbox" value="Recursos propios" class="chk-pago"> Recursos propios</label>
+        </div>
+        <input type="text" id="f-pago-otro" placeholder="Otra forma de pago (opcional)">
+      </div>
+
+      <div class="campo">
+        <label>Características especiales</label>
+        <textarea id="f-caracteristicas" placeholder="Detalles reales de esta propiedad — nunca inventes nada aquí."></textarea>
+      </div>
+
+      <div class="campo">
+        <label>Fotos — una URL por línea (todas se muestran como autorizadas)</label>
+        <textarea id="f-fotos" placeholder="https://..."></textarea>
+      </div>
+
+      <div class="campo">
+        <label>Notas internas (nunca se ven en el sitio público)</label>
+        <textarea id="f-notas"></textarea>
+      </div>
+
+      <div id="mensaje-form"></div>
+      <div class="fila-botones-form">
+        <button type="button" class="btn secundario" id="boton-cancelar-form">Cancelar</button>
+        <button type="submit" class="btn" id="boton-guardar-form">Guardar</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  var claveGuardada = "";
+  var propiedades = [];
+
+  var formatoPrecio = new Intl.NumberFormat("es-MX", { style: "currency", currency: "MXN", maximumFractionDigits: 0 });
+
+  function cabeceras() {
+    return { "Content-Type": "application/json", "x-admin-key": claveGuardada };
+  }
+
+  // ── LOGIN ──
+  // Devuelve {ok, motivo}. ok=true solo si la clave es correcta Y Supabase
+  // ya está conectado y regresó una lista de verdad.
+  function intentarEntrar(clave) {
+    return fetch("/api/admin/propiedades", { headers: { "x-admin-key": clave } })
+      .then(function (r) {
+        if (r.status === 401) return { ok: false, motivo: "clave" };
+        return r.json().then(function (data) {
+          if (!r.ok || !Array.isArray(data)) return { ok: false, motivo: "servidor", detalle: data && data.error };
+          propiedades = data;
+          return { ok: true };
+        });
+      })
+      .catch(function () { return { ok: false, motivo: "red" }; });
+  }
+
+  document.getElementById("boton-entrar").addEventListener("click", function () {
+    var clave = document.getElementById("campo-clave").value;
+    var errorEl = document.getElementById("error-login");
+    intentarEntrar(clave).then(function (res) {
+      if (!res.ok) {
+        errorEl.style.display = "block";
+        if (res.motivo === "clave") errorEl.textContent = "Contraseña incorrecta.";
+        else if (res.motivo === "servidor") errorEl.textContent = "La clave es correcta, pero el servidor respondió con un error: " + (res.detalle || "revisa que Supabase esté conectado.");
+        else errorEl.textContent = "No se pudo conectar. Intenta de nuevo.";
+        return;
+      }
+      errorEl.style.display = "none";
+      claveGuardada = clave;
+      sessionStorage.setItem("clave-admin-raiz-segura", clave);
+      mostrarApp();
+    });
+  });
+  document.getElementById("campo-clave").addEventListener("keydown", function (e) {
+    if (e.key === "Enter") document.getElementById("boton-entrar").click();
+  });
+
+  function mostrarApp() {
+    document.getElementById("pantalla-login").style.display = "none";
+    document.getElementById("app").style.display = "block";
+    renderizarTabla();
+  }
+
+  // ── TABLA ──
+  function renderizarTabla() {
+    var cuerpo = document.getElementById("cuerpo-tabla");
+    cuerpo.innerHTML = "";
+    document.getElementById("tabla-vacia").style.display = propiedades.length ? "none" : "block";
+    document.getElementById("tabla-propiedades").style.display = propiedades.length ? "table" : "none";
+
+    propiedades.forEach(function (p) {
+      var tr = document.createElement("tr");
+      var ubicacion = [p.colonia || p.desarrollo, p.municipio].filter(Boolean).join(", ");
+      var precio = p.precio_publicado ? formatoPrecio.format(p.precio_publicado) : "—";
+      var esDisponible = p.disponibilidad === "DISPONIBLE";
+      tr.innerHTML =
+        "<td>" + (p.referencia_publica || p.id_operativo || "(sin asignar)") + "</td>" +
+        "<td>" + (p.tipo_propiedad || "—") + "</td>" +
+        "<td>" + (ubicacion || "—") + "</td>" +
+        "<td>" + precio + "</td>" +
+        '<td><span class="badge ' + (esDisponible ? "disponible" : "otro") + '">' + (p.disponibilidad || "—") + "</span></td>" +
+        '<td class="acciones"><button class="btn secundario" data-editar="' + p.id + '">Editar</button>' +
+        (p.disponibilidad !== "ARCHIVADA" ? '<button class="btn peligro" data-archivar="' + p.id + '">Archivar</button>' : "") +
+        "</td>";
+      cuerpo.appendChild(tr);
+    });
+  }
+
+  document.getElementById("cuerpo-tabla").addEventListener("click", function (e) {
+    var idEditar = e.target.getAttribute("data-editar");
+    var idArchivar = e.target.getAttribute("data-archivar");
+    if (idEditar) abrirFormulario(propiedades.find(function (p) { return p.id === idEditar; }));
+    if (idArchivar) archivar(idArchivar);
+  });
+
+  function archivar(id) {
+    if (!confirm("¿Archivar esta propiedad? Deja de verse en el sitio público, pero no se borra.")) return;
+    fetch("/api/admin/propiedades", {
+      method: "PUT",
+      headers: cabeceras(),
+      body: JSON.stringify({ id: id, disponibilidad: "ARCHIVADA" })
+    })
+      .then(function (r) { return r.json(); })
+      .then(function () { return cargarPropiedades(); });
+  }
+
+  function cargarPropiedades() {
+    return fetch("/api/admin/propiedades", { headers: cabeceras() })
+      .then(function (r) { return r.json(); })
+      .then(function (data) { propiedades = data; renderizarTabla(); });
+  }
+
+  // ── FORMULARIO ──
+  var fondoForm = document.getElementById("fondo-form");
+  var formPropiedad = document.getElementById("form-propiedad");
+  var mensajeForm = document.getElementById("mensaje-form");
+
+  function abrirFormulario(propiedad) {
+    formPropiedad.reset();
+    document.querySelectorAll(".chk-pago").forEach(function (c) { c.checked = false; });
+    mensajeForm.style.display = "none";
+    document.getElementById("f-pago-otro").value = "";
+
+    if (propiedad) {
+      document.getElementById("titulo-form").textContent = "Editar propiedad";
+      document.getElementById("f-id").value = propiedad.id;
+      document.getElementById("f-tipo").value = propiedad.tipo_propiedad || "";
+      document.getElementById("f-operacion").value = propiedad.operacion || "venta";
+      document.getElementById("f-disponibilidad").value = propiedad.disponibilidad || "DISPONIBLE";
+      document.getElementById("f-estado").value = propiedad.estado || "";
+      document.getElementById("f-municipio").value = propiedad.municipio || "";
+      document.getElementById("f-ciudad").value = propiedad.ciudad || "";
+      document.getElementById("f-colonia").value = propiedad.colonia || "";
+      document.getElementById("f-desarrollo").value = propiedad.desarrollo || "";
+      document.getElementById("f-precio").value = propiedad.precio_publicado || "";
+      document.getElementById("f-terreno").value = propiedad.terreno_m2 || "";
+      document.getElementById("f-construccion").value = propiedad.construccion_m2 || "";
+      document.getElementById("f-recamaras").value = propiedad.recamaras || "";
+      document.getElementById("f-banos").value = propiedad.banos || "";
+      document.getElementById("f-estacionamientos").value = propiedad.estacionamientos || "";
+      document.getElementById("f-antiguedad").value = propiedad.antiguedad || "";
+      document.getElementById("f-amenidades").value = (propiedad.amenidades || []).join(", ");
+      document.getElementById("f-caracteristicas").value = propiedad.caracteristicas_especiales || "";
+      document.getElementById("f-notas").value = propiedad.notas || "";
+      document.getElementById("f-fotos").value = (propiedad.fotos || []).map(function (f) { return f.url; }).join("\n");
+
+      var pagosBase = ["Infonavit", "Fovissste", "Crédito bancario", "Recursos propios"];
+      (propiedad.formas_pago_aceptadas || []).forEach(function (fp) {
+        if (pagosBase.indexOf(fp) !== -1) {
+          document.querySelector('.chk-pago[value="' + fp + '"]').checked = true;
+        } else {
+          document.getElementById("f-pago-otro").value = fp;
+        }
+      });
+    } else {
+      document.getElementById("titulo-form").textContent = "Agregar propiedad";
+      document.getElementById("f-id").value = "";
+      document.getElementById("f-disponibilidad").value = "DISPONIBLE";
+      document.getElementById("f-operacion").value = "venta";
+    }
+    fondoForm.classList.add("abierto");
+  }
+  function cerrarFormulario() { fondoForm.classList.remove("abierto"); }
+
+  document.getElementById("boton-nueva").addEventListener("click", function () { abrirFormulario(null); });
+  document.getElementById("boton-cancelar-form").addEventListener("click", cerrarFormulario);
+  fondoForm.addEventListener("click", function (e) { if (e.target === fondoForm) cerrarFormulario(); });
+
+  formPropiedad.addEventListener("submit", function (e) {
+    e.preventDefault();
+
+    var pagos = Array.prototype.slice.call(document.querySelectorAll(".chk-pago:checked")).map(function (c) { return c.value; });
+    var otro = document.getElementById("f-pago-otro").value.trim();
+    if (otro) pagos.push(otro);
+
+    var cuerpo = {
+      id: document.getElementById("f-id").value || undefined,
+      tipo_propiedad: document.getElementById("f-tipo").value,
+      operacion: document.getElementById("f-operacion").value,
+      disponibilidad: document.getElementById("f-disponibilidad").value,
+      estado: document.getElementById("f-estado").value,
+      municipio: document.getElementById("f-municipio").value,
+      ciudad: document.getElementById("f-ciudad").value,
+      colonia: document.getElementById("f-colonia").value,
+      desarrollo: document.getElementById("f-desarrollo").value,
+      precio_publicado: document.getElementById("f-precio").value,
+      terreno_m2: document.getElementById("f-terreno").value,
+      construccion_m2: document.getElementById("f-construccion").value,
+      recamaras: document.getElementById("f-recamaras").value,
+      banos: document.getElementById("f-banos").value,
+      estacionamientos: document.getElementById("f-estacionamientos").value,
+      antiguedad: document.getElementById("f-antiguedad").value,
+      amenidades: document.getElementById("f-amenidades").value.split(",").map(function (s) { return s.trim(); }).filter(Boolean),
+      caracteristicas_especiales: document.getElementById("f-caracteristicas").value,
+      notas: document.getElementById("f-notas").value,
+      formas_pago_aceptadas: pagos,
+      fotos: document.getElementById("f-fotos").value.split("\n").map(function (s) { return s.trim(); }).filter(Boolean)
+    };
+
+    var esEdicion = !!cuerpo.id;
+    document.getElementById("boton-guardar-form").disabled = true;
+
+    fetch("/api/admin/propiedades", {
+      method: esEdicion ? "PUT" : "POST",
+      headers: cabeceras(),
+      body: JSON.stringify(cuerpo)
+    })
+      .then(function (r) { return r.json().then(function (d) { return { ok: r.ok, d: d }; }); })
+      .then(function (res) {
+        document.getElementById("boton-guardar-form").disabled = false;
+        if (!res.ok) {
+          mensajeForm.textContent = (res.d && res.d.error) || "No se pudo guardar.";
+          mensajeForm.className = "error";
+          return;
+        }
+        mensajeForm.textContent = "Guardado.";
+        mensajeForm.className = "ok";
+        cargarPropiedades().then(function () { setTimeout(cerrarFormulario, 500); });
+      })
+      .catch(function () {
+        document.getElementById("boton-guardar-form").disabled = false;
+        mensajeForm.textContent = "No se pudo guardar, intenta otra vez.";
+        mensajeForm.className = "error";
+      });
+  });
+
+  // ── ARRANQUE ──
+  var claveEnSesion = sessionStorage.getItem("clave-admin-raiz-segura");
+  if (claveEnSesion) {
+    intentarEntrar(claveEnSesion).then(function (res) {
+      if (res.ok) { claveGuardada = claveEnSesion; mostrarApp(); }
+      else if (res.motivo === "clave") sessionStorage.removeItem("clave-admin-raiz-segura");
+    });
+  }
+})();
+</script>
+</body>
+</html>

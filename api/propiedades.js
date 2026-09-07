@@ -23,10 +23,10 @@ module.exports = async (req, res) => {
   const { data, error } = await supabase
     .from("propiedades")
     .select(
-      "referencia_publica, ciudad, municipio, zona, colonia, desarrollo, " +
+      "referencia_publica, estado, ciudad, municipio, zona, colonia, desarrollo, " +
         "tipo_propiedad, operacion, precio_publicado, terreno_m2, construccion_m2, " +
         "recamaras, banos, estacionamientos, antiguedad, amenidades, " +
-        "caracteristicas_especiales, fotos"
+        "caracteristicas_especiales, formas_pago_aceptadas, fotos"
     )
     .in("disponibilidad", ESTATUS_PUBLICOS)
     .order("creado_en", { ascending: false })

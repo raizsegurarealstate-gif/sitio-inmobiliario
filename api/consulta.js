@@ -1,7 +1,6 @@
-// POST /api/consulta — guarda cada consulta del sitio directo en clientes_inmobiliaria.
+// POST /api/consulta — guarda cada consulta del sitio directo en clientes_inmobiliaria,
+// y si mandaron fecha para una propiedad concreta, agenda la cita en la tabla `citas`.
 // Igual que propiedades.js: usa la llave de servicio, nunca la ve el navegador.
-// Si el teléfono ya existía (índice único de clientes_inmo_tel_unico), actualiza esa
-// fila en vez de tronar — es la misma persona volviendo a preguntar.
 const { createClient } = require("@supabase/supabase-js");
 
 function soloDigitos(t) {
@@ -28,6 +27,9 @@ module.exports = async (req, res) => {
   const telefono = soloDigitos(body.telefono);
   const mensaje = (body.mensaje || "").trim().slice(0, 1000);
   const referenciaPropiedad = (body.referencia_propiedad || "").trim().slice(0, 100);
+  const formaPago = (body.forma_pago || "").trim().slice(0, 100);
+  const fechaCita = (body.fecha_cita || "").trim().slice(0, 10); // "YYYY-MM-DD"
+  const horaCita = (body.hora_cita || "").trim().slice(0, 5); // "HH:MM"
 
   if (telefono.length !== 10) {
     res.status(400).json({ error: "Falta un teléfono válido de 10 dígitos." });
@@ -42,38 +44,70 @@ module.exports = async (req, res) => {
   }
   const supabase = createClient(url, llave);
 
-  const { error: errorInsert } = await supabase.from("clientes_inmobiliaria").insert({
-    nombre: nombre || null,
-    telefono,
-    origen: "WEB",
-    anuncio_origen: referenciaPropiedad || null,
-    notas: mensaje || null,
-    etapa: "NUEVO",
-  });
+  let clienteId = null;
+
+  const { data: insertado, error: errorInsert } = await supabase
+    .from("clientes_inmobiliaria")
+    .insert({
+      nombre: nombre || null,
+      telefono,
+      origen: "WEB",
+      anuncio_origen: referenciaPropiedad || null,
+      forma_pago: formaPago || null,
+      notas: mensaje || null,
+      etapa: "NUEVO",
+    })
+    .select("id")
+    .single();
 
   if (!errorInsert) {
-    res.status(200).json({ ok: true });
-    return;
-  }
+    clienteId = insertado.id;
+  } else if (errorInsert.code === "23505") {
+    // Ya existía ese teléfono — actualiza en vez de tronar, es la misma persona volviendo.
+    const cambios = { ultima_interaccion: new Date().toISOString() };
+    if (nombre) cambios.nombre = nombre;
+    if (formaPago) cambios.forma_pago = formaPago;
+    if (mensaje) cambios.notas = mensaje;
+    cambios.siguiente_accion = "Volvió a preguntar desde el sitio web — revisar.";
 
-  // 23505 = ya existe ese teléfono (índice único parcial) — actualiza, no falla.
-  if (errorInsert.code === "23505") {
-    const { error: errorUpdate } = await supabase
+    const { data: actualizado, error: errorUpdate } = await supabase
       .from("clientes_inmobiliaria")
-      .update({
-        ultima_interaccion: new Date().toISOString(),
-        notas: mensaje || null,
-        siguiente_accion: "Volvió a preguntar desde el sitio web — revisar.",
-      })
-      .eq("telefono", telefono);
+      .update(cambios)
+      .eq("telefono", telefono)
+      .select("id")
+      .single();
 
     if (errorUpdate) {
       res.status(500).json({ error: errorUpdate.message });
       return;
     }
-    res.status(200).json({ ok: true, nota: "Ya te teníamos registrado — actualizamos tu consulta." });
+    clienteId = actualizado.id;
+  } else {
+    res.status(500).json({ error: errorInsert.message });
     return;
   }
 
-  res.status(500).json({ error: errorInsert.message });
+  // Si pidieron fecha y es sobre una propiedad concreta (no el kit financiero),
+  // agenda la cita ligada a esa propiedad.
+  if (fechaCita && referenciaPropiedad && referenciaPropiedad !== "Kit financiero") {
+    const { data: propiedad } = await supabase
+      .from("propiedades")
+      .select("id, asesor_id")
+      .eq("referencia_publica", referenciaPropiedad)
+      .maybeSingle();
+
+    if (propiedad) {
+      const fechaHora = fechaCita + "T" + (horaCita || "12:00") + ":00";
+      await supabase.from("citas").insert({
+        cliente_id: clienteId,
+        propiedad_id: propiedad.id,
+        asesor_id: propiedad.asesor_id || null,
+        fecha_hora: fechaHora,
+        estado: "agendada",
+        notas: "Solicitada desde el sitio web.",
+      });
+    }
+  }
+
+  res.status(200).json({ ok: true });
 };

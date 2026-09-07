@@ -3,13 +3,13 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Alejandra García — Asesora inmobiliaria en Querétaro</title>
-<meta name="description" content="Propiedades nuevas y usadas en Querétaro: Corregidora, El Marqués, Juriquilla, Zibatá, Zakia, El Mirador y Milenio III.">
+<title>Raíz Segura Real Estate — Alejandra García</title>
+<meta name="description" content="Raíz Segura Real Estate — Alejandra García, asesora inmobiliaria. Compra, venta y renta de propiedades.">
 <style>
   :root{
     --tinta:#14201d;
-    --papel:#f7f5f0;
-    --acento:#0f5d52;
+    --papel:#f8f5f0;
+    --acento:#2D6A4F;
     --acento-suave: color-mix(in srgb, var(--acento) 9%, white);
     --acento-borde: color-mix(in srgb, var(--acento) 26%, white);
     --fuente-titulo:Georgia,"Iowan Old Style","Palatino Linotype","Book Antiqua",serif;
@@ -31,6 +31,16 @@
     z-index:0;
   }
   header > *{position:relative;z-index:1}
+  .avatar{
+    width:112px;height:112px;border-radius:50%;margin:0 auto 20px;
+    overflow:hidden;background:var(--acento);border:4px solid #fff;
+    box-shadow:0 12px 24px -10px rgba(20,32,29,.35);
+    display:flex;align-items:center;justify-content:center;
+  }
+  .avatar img{width:100%;height:100%;object-fit:cover;display:block}
+  .avatar .iniciales{
+    display:none;color:#fff;font-family:var(--fuente-titulo);font-size:36px;font-weight:700;
+  }
   .chip{
     display:inline-flex;align-items:center;gap:8px;
     background:var(--acento-suave);border:1px solid var(--acento-borde);
@@ -40,9 +50,11 @@
   }
   header h1{
     font-family:var(--fuente-titulo);font-weight:700;
-    font-size:clamp(38px,7vw,60px);line-height:1.06;letter-spacing:-.01em;
+    font-size:clamp(20px,2.6vw,26px);line-height:1.2;letter-spacing:-.005em;
   }
   header .lema{margin-top:16px;font-size:18px;opacity:.72;max-width:520px;margin-left:auto;margin-right:auto}
+  .botones-header{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin-top:30px}
+  .botones-header .boton{margin-top:0}
   .boton{
     display:inline-block;margin-top:30px;padding:17px 34px;border-radius:999px;
     background:var(--acento);color:#fff;text-decoration:none;font-weight:700;font-size:16px;
@@ -54,10 +66,17 @@
     box-shadow:none;
   }
 
-  .zonas{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-top:30px}
-  .zona{
-    background:#fff;border:1px solid rgba(0,0,0,.08);border-radius:999px;
-    padding:8px 16px;font-size:13.5px;font-weight:600;opacity:.8;
+  .filtros{
+    display:flex;flex-wrap:wrap;gap:14px;justify-content:center;
+    background:#fff;border:1px solid rgba(0,0,0,.06);border-radius:16px;
+    padding:20px;margin-bottom:36px;
+    box-shadow:0 10px 24px -18px rgba(20,32,29,.2);
+  }
+  .filtro-grupo{display:flex;flex-direction:column;gap:6px;min-width:150px;flex:1}
+  .filtro-grupo label{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;opacity:.6}
+  .filtro-grupo select{
+    padding:10px 12px;border-radius:10px;border:1px solid rgba(0,0,0,.15);
+    font:inherit;font-size:14.5px;background:#fff;
   }
 
   section{padding:12px 0 60px}
@@ -109,6 +128,12 @@
     font:inherit;font-size:15px;
   }
   .campo textarea{resize:vertical;min-height:80px}
+  .campo.campo-doble{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .campo.campo-doble label{margin-bottom:6px}
+  .campo select{
+    width:100%;padding:12px 14px;border-radius:10px;border:1px solid rgba(0,0,0,.15);
+    font:inherit;font-size:15px;background:#fff;
+  }
   .modal .fila-botones{display:flex;gap:10px;margin-top:20px}
   .modal .fila-botones .boton{flex:1;margin-top:0}
   .mensaje-envio{font-size:14px;margin-top:14px;padding:12px 14px;border-radius:10px}
@@ -121,23 +146,78 @@
 <body>
 
   <header class="caja">
-    <p class="chip">📍 Querétaro</p>
+    <div class="avatar">
+      <img src="foto-alejandra.png" alt="Alejandra García"
+        onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+      <div class="iniciales">AG</div>
+    </div>
+    <p class="chip">🏡 Raíz Segura Real Estate</p>
     <h1>Alejandra García</h1>
-    <p class="lema">Asesora inmobiliaria — propiedades nuevas y usadas, para vivir o invertir.</p>
-    <a class="boton" href="https://wa.me/524424850838?text=Hola%2C%20quiero%20informaci%C3%B3n%20sobre%20una%20propiedad" target="_blank" rel="noopener">Escríbeme por WhatsApp</a>
-    <div class="zonas">
-      <span class="zona">Corregidora</span>
-      <span class="zona">El Marqués</span>
-      <span class="zona">Juriquilla</span>
-      <span class="zona">Zibatá</span>
-      <span class="zona">Zakia</span>
-      <span class="zona">El Mirador</span>
-      <span class="zona">Milenio III</span>
-      <span class="zona">Puebla</span>
+    <p class="lema">Compra, venta y renta de propiedades.</p>
+    <div class="botones-header">
+      <a class="boton" href="https://wa.me/524424850838?text=Hola%2C%20quiero%20informaci%C3%B3n%20sobre%20una%20propiedad" target="_blank" rel="noopener">Escríbeme por WhatsApp</a>
+      <a class="boton secundario" href="/calculadora/">🧮 ¿Para cuánto me alcanza?</a>
     </div>
   </header>
 
   <section class="caja">
+    <div class="filtros">
+      <div class="filtro-grupo">
+        <label for="filtro-estado">Estado</label>
+        <select id="filtro-estado">
+          <option value="">Todos</option>
+        </select>
+      </div>
+      <div class="filtro-grupo">
+        <label for="filtro-municipio">Municipio</label>
+        <select id="filtro-municipio">
+          <option value="">Todos</option>
+        </select>
+      </div>
+      <div class="filtro-grupo">
+        <label for="filtro-colonia">Colonia / fraccionamiento</label>
+        <select id="filtro-colonia">
+          <option value="">Todas</option>
+        </select>
+      </div>
+      <div class="filtro-grupo">
+        <label for="filtro-tipo">Tipo</label>
+        <select id="filtro-tipo">
+          <option value="">Todos</option>
+          <option value="casa">Casa</option>
+          <option value="departamento">Departamento</option>
+          <option value="bodega">Bodega</option>
+          <option value="local">Local</option>
+        </select>
+      </div>
+      <div class="filtro-grupo">
+        <label for="filtro-recamaras">Recámaras</label>
+        <select id="filtro-recamaras">
+          <option value="">Cualquiera</option>
+          <option value="1">1+</option>
+          <option value="2">2+</option>
+          <option value="3">3+</option>
+          <option value="4">4+</option>
+        </select>
+      </div>
+      <div class="filtro-grupo">
+        <label for="filtro-presupuesto">Presupuesto máximo</label>
+        <select id="filtro-presupuesto">
+          <option value="">Sin límite</option>
+          <option value="1500000">Hasta $1.5 millones</option>
+          <option value="2500000">Hasta $2.5 millones</option>
+          <option value="4000000">Hasta $4 millones</option>
+          <option value="6000000">Hasta $6 millones</option>
+        </select>
+      </div>
+      <div class="filtro-grupo">
+        <label for="filtro-pago">Forma de pago</label>
+        <select id="filtro-pago">
+          <option value="">Todas</option>
+        </select>
+      </div>
+    </div>
+
     <h2 class="titulo-seccion">Propiedades disponibles</h2>
     <p class="subtitulo-seccion">Inventario real, actualizado directo desde mi sistema.</p>
     <div id="lista-propiedades" class="propiedades">
@@ -152,20 +232,45 @@
       <form id="form-consulta">
         <input type="hidden" id="campo-referencia" name="referencia_propiedad">
         <div class="campo">
-          <label for="campo-nombre">Tu nombre</label>
-          <input type="text" id="campo-nombre" name="nombre" autocomplete="name">
+          <label for="campo-nombre">Tu nombre completo</label>
+          <input type="text" id="campo-nombre" name="nombre" required autocomplete="name">
         </div>
         <div class="campo">
           <label for="campo-telefono">Tu teléfono (10 dígitos)</label>
           <input type="tel" id="campo-telefono" name="telefono" required autocomplete="tel" inputmode="numeric">
         </div>
         <div class="campo">
-          <label for="campo-mensaje">¿Qué buscas o qué te gustaría saber?</label>
+          <label for="campo-forma-pago">¿Cómo realizarás la compra?</label>
+          <select id="campo-forma-pago" name="forma_pago">
+            <option value="">Selecciona una opción</option>
+            <option value="Infonavit">Infonavit</option>
+            <option value="Fovissste">Fovissste</option>
+            <option value="Crédito bancario">Crédito bancario</option>
+            <option value="Recursos propios">Recursos propios</option>
+            <option value="Otro">Otro</option>
+          </select>
+        </div>
+        <div class="campo" id="campo-forma-pago-otro-envoltura" hidden>
+          <label for="campo-forma-pago-otro">¿Cuál?</label>
+          <input type="text" id="campo-forma-pago-otro" placeholder="Escribe cómo">
+        </div>
+        <div class="campo campo-doble">
+          <div>
+            <label for="campo-fecha">Fecha para la cita</label>
+            <input type="date" id="campo-fecha" name="fecha_cita">
+          </div>
+          <div>
+            <label for="campo-hora">Hora</label>
+            <input type="time" id="campo-hora" name="hora_cita">
+          </div>
+        </div>
+        <div class="campo">
+          <label for="campo-mensaje">¿Algo más que quieras contarme?</label>
           <textarea id="campo-mensaje" name="mensaje"></textarea>
         </div>
         <div class="fila-botones">
           <button type="button" class="boton secundario" id="boton-cerrar">Cancelar</button>
-          <button type="submit" class="boton" id="boton-enviar">Enviar</button>
+          <button type="submit" class="boton" id="boton-enviar">Continuar por WhatsApp</button>
         </div>
         <div id="mensaje-envio"></div>
       </form>
@@ -173,7 +278,7 @@
   </div>
 
   <footer>
-    Alejandra García · Asesora inmobiliaria en Querétaro · WhatsApp 442 485 0838
+    Raíz Segura Real Estate · Alejandra García · WhatsApp 442 485 0838
   </footer>
 
 <script>
@@ -190,7 +295,7 @@
   }
 
   function tarjeta(p) {
-    var ubicacion = [p.colonia, p.zona || p.municipio || p.ciudad].filter(Boolean).join(", ");
+    var ubicacion = [p.colonia || p.desarrollo, p.municipio, p.estado].filter(Boolean).join(", ");
     var precio = p.precio_publicado ? formatoPrecio.format(p.precio_publicado) : "Precio a consultar";
     var datos = [];
     if (p.recamaras) datos.push(p.recamaras + " rec.");
@@ -219,17 +324,157 @@
     return div;
   }
 
+  // Los 32 estados de la República — lista fija, no depende de tu inventario.
+  var ESTADOS_REPUBLICA = [
+    "Aguascalientes", "Baja California", "Baja California Sur", "Campeche",
+    "Chiapas", "Chihuahua", "Ciudad de México", "Coahuila", "Colima", "Durango",
+    "Guanajuato", "Guerrero", "Hidalgo", "Jalisco", "México", "Michoacán",
+    "Morelos", "Nayarit", "Nuevo León", "Oaxaca", "Puebla", "Querétaro",
+    "Quintana Roo", "San Luis Potosí", "Sinaloa", "Sonora", "Tabasco",
+    "Tamaulipas", "Tlaxcala", "Veracruz", "Yucatán", "Zacatecas"
+  ];
+
+  // Formas de pago comunes en México — más lo que aparezca en tus propiedades
+  // reales, que puede ser cualquier otra cosa ("Otro"), texto libre.
+  var FORMAS_PAGO_BASE = ["Infonavit", "Fovissste", "Crédito bancario", "Recursos propios"];
+
+  // Modo vista previa: solo se activa con ?demo=1 en la liga. Nunca aparece
+  // por accidente cuando el sitio ya esté conectado de verdad a Supabase.
+  var PROPIEDAD_EJEMPLO = {
+    referencia_publica: "EJEMPLO — no es una propiedad real",
+    operacion: "venta",
+    tipo_propiedad: "Casa",
+    estado: "Querétaro",
+    municipio: "El Marqués",
+    colonia: "Zibatá",
+    precio_publicado: 2650000,
+    recamaras: 3,
+    banos: 2.5,
+    estacionamientos: 2,
+    construccion_m2: 180,
+    formas_pago_aceptadas: ["Infonavit", "Recursos propios"],
+    caracteristicas_especiales: "Así se va a ver cada tarjeta cuando esté conectada a tu inventario real.",
+    fotos: []
+  };
+
+  var listaCompleta = [];
+
+  function normaliza(t) {
+    return (t || "").toString().toLowerCase().trim();
+  }
+
+  function opcionesUnicas(obtenerValor, cumpleContexto) {
+    var vistos = {};
+    var lista = [];
+    listaCompleta.forEach(function (p) {
+      if (cumpleContexto && !cumpleContexto(p)) return;
+      var v = obtenerValor(p);
+      var valores = Array.isArray(v) ? v : [v];
+      valores.forEach(function (val) {
+        val = (val || "").toString().trim();
+        if (val && !vistos[val]) {
+          vistos[val] = true;
+          lista.push(val);
+        }
+      });
+    });
+    return lista.sort(function (a, b) { return a.localeCompare(b, "es"); });
+  }
+
+  function llenarSelect(select, opciones, etiquetaTodos) {
+    var actual = select.value;
+    select.innerHTML = '<option value="">' + etiquetaTodos + "</option>" +
+      opciones.map(function (o) { return '<option value="' + o + '">' + o + "</option>"; }).join("");
+    if (opciones.indexOf(actual) !== -1) select.value = actual;
+  }
+
+  function actualizarOpcionesDependientes() {
+    var estado = document.getElementById("filtro-estado").value;
+    var municipio = document.getElementById("filtro-municipio").value;
+
+    var municipios = opcionesUnicas(
+      function (p) { return p.municipio; },
+      estado ? function (p) { return normaliza(p.estado) === normaliza(estado); } : null
+    );
+    llenarSelect(document.getElementById("filtro-municipio"), municipios, "Todos");
+
+    var colonias = opcionesUnicas(
+      function (p) { return p.colonia || p.desarrollo; },
+      function (p) {
+        if (estado && normaliza(p.estado) !== normaliza(estado)) return false;
+        if (municipio && p.municipio !== municipio) return false;
+        return true;
+      }
+    );
+    llenarSelect(document.getElementById("filtro-colonia"), colonias, "Todas");
+
+    var pagoExtra = opcionesUnicas(function (p) { return p.formas_pago_aceptadas; })
+      .filter(function (v) { return FORMAS_PAGO_BASE.indexOf(v) === -1; });
+    llenarSelect(document.getElementById("filtro-pago"), FORMAS_PAGO_BASE.concat(pagoExtra), "Todas");
+  }
+
+  function propiedadCumpleFiltros(p) {
+    var estado = document.getElementById("filtro-estado").value;
+    if (estado && normaliza(p.estado) !== normaliza(estado)) return false;
+
+    var municipio = document.getElementById("filtro-municipio").value;
+    if (municipio && p.municipio !== municipio) return false;
+
+    var colonia = document.getElementById("filtro-colonia").value;
+    if (colonia && p.colonia !== colonia && p.desarrollo !== colonia) return false;
+
+    var tipo = document.getElementById("filtro-tipo").value;
+    if (tipo && normaliza(p.tipo_propiedad).indexOf(tipo) === -1) return false;
+
+    var recamaras = document.getElementById("filtro-recamaras").value;
+    if (recamaras && !(p.recamaras >= Number(recamaras))) return false;
+
+    var presupuesto = document.getElementById("filtro-presupuesto").value;
+    if (presupuesto && p.precio_publicado && p.precio_publicado > Number(presupuesto)) return false;
+
+    var pago = document.getElementById("filtro-pago").value;
+    if (pago) {
+      var acepta = (p.formas_pago_aceptadas || []).map(normaliza);
+      if (acepta.indexOf(normaliza(pago)) === -1) return false;
+    }
+
+    return true;
+  }
+
+  function renderizarLista() {
+    var contenedor = document.getElementById("lista-propiedades");
+    contenedor.innerHTML = "";
+    var filtradas = listaCompleta.filter(propiedadCumpleFiltros);
+    if (filtradas.length === 0) {
+      contenedor.innerHTML = '<p class="estado-lista">No encontré propiedades con esos filtros. Prueba quitando alguno, o escríbeme por WhatsApp y te ayudo a buscar.</p>';
+      return;
+    }
+    filtradas.forEach(function (p) { contenedor.appendChild(tarjeta(p)); });
+  }
+
   function cargarPropiedades() {
     var contenedor = document.getElementById("lista-propiedades");
+
+    function listo() {
+      actualizarOpcionesDependientes();
+      renderizarLista();
+    }
+
+    if (location.search.indexOf("demo=1") !== -1) {
+      listaCompleta = [PROPIEDAD_EJEMPLO];
+      listo();
+      return;
+    }
+
     fetch("/api/propiedades")
       .then(function (r) { return r.json(); })
       .then(function (lista) {
-        contenedor.innerHTML = "";
-        if (!Array.isArray(lista) || lista.length === 0) {
+        listaCompleta = Array.isArray(lista) ? lista : [];
+        if (listaCompleta.length === 0) {
           contenedor.innerHTML = '<p class="estado-lista">Por ahora no tengo propiedades públicas cargadas aquí — escríbeme por WhatsApp y te ayudo a encontrar la tuya.</p>';
           return;
         }
-        lista.forEach(function (p) { contenedor.appendChild(tarjeta(p)); });
+        listo();
       })
       .catch(function () {
         contenedor.innerHTML = '<p class="estado-lista">No pude cargar las propiedades ahorita. Escríbeme por WhatsApp mientras tanto.</p>';
@@ -243,13 +488,17 @@
   var mensajeEnvio = document.getElementById("mensaje-envio");
   var botonEnviar = document.getElementById("boton-enviar");
 
+  var WHATSAPP_ALEJANDRA = "524424850838";
+  var selectFormaPago = document.getElementById("campo-forma-pago");
+  var envolturaOtro = document.getElementById("campo-forma-pago-otro-envoltura");
+
   function abrirModal(referencia) {
-    campoReferencia.value = referencia || "";
     refModalTexto.textContent = referencia ? "Sobre " + referencia : "Cuéntame qué buscas";
     mensajeEnvio.textContent = "";
     mensajeEnvio.className = "mensaje-envio";
     formConsulta.reset();
     campoReferencia.value = referencia || "";
+    envolturaOtro.hidden = true;
     fondoModal.classList.add("abierto");
   }
   function cerrarModal() { fondoModal.classList.remove("abierto"); }
@@ -260,45 +509,82 @@
   document.getElementById("boton-cerrar").addEventListener("click", cerrarModal);
   fondoModal.addEventListener("click", function (e) { if (e.target === fondoModal) cerrarModal(); });
 
+  selectFormaPago.addEventListener("change", function () {
+    envolturaOtro.hidden = this.value !== "Otro";
+  });
+
+  function formaPagoElegida() {
+    if (selectFormaPago.value === "Otro") {
+      return document.getElementById("campo-forma-pago-otro").value.trim();
+    }
+    return selectFormaPago.value;
+  }
+
   formConsulta.addEventListener("submit", function (e) {
     e.preventDefault();
+    var nombre = document.getElementById("campo-nombre").value.trim();
     var telefono = document.getElementById("campo-telefono").value.replace(/\D/g, "");
+    var formaPago = formaPagoElegida();
+    var fecha = document.getElementById("campo-fecha").value;
+    var hora = document.getElementById("campo-hora").value;
+    var mensaje = document.getElementById("campo-mensaje").value.trim();
+    var referencia = campoReferencia.value;
+
+    if (!nombre) {
+      mensajeEnvio.textContent = "Necesito tu nombre completo.";
+      mensajeEnvio.className = "mensaje-envio error";
+      return;
+    }
     if (telefono.length !== 10) {
       mensajeEnvio.textContent = "Necesito un teléfono de 10 dígitos para poder escribirte.";
       mensajeEnvio.className = "mensaje-envio error";
       return;
     }
-    botonEnviar.disabled = true;
-    botonEnviar.textContent = "Enviando…";
+
+    // Se guarda en tu CRM en segundo plano — no detiene la salida a WhatsApp.
     fetch("/api/consulta", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        nombre: document.getElementById("campo-nombre").value,
+        nombre: nombre,
         telefono: telefono,
-        mensaje: document.getElementById("campo-mensaje").value,
-        referencia_propiedad: campoReferencia.value
+        mensaje: mensaje,
+        referencia_propiedad: referencia,
+        forma_pago: formaPago,
+        fecha_cita: fecha,
+        hora_cita: hora
       })
-    })
-      .then(function (r) { return r.json().then(function (d) { return { ok: r.ok, d: d }; }); })
-      .then(function (res) {
-        botonEnviar.disabled = false;
-        botonEnviar.textContent = "Enviar";
-        if (!res.ok) {
-          mensajeEnvio.textContent = (res.d && res.d.error) || "No se pudo enviar, intenta otra vez.";
-          mensajeEnvio.className = "mensaje-envio error";
-          return;
-        }
-        mensajeEnvio.textContent = "¡Listo! Ya quedó registrada tu consulta. Te contacto pronto.";
-        mensajeEnvio.className = "mensaje-envio ok";
-        setTimeout(cerrarModal, 1800);
-      })
-      .catch(function () {
-        botonEnviar.disabled = false;
-        botonEnviar.textContent = "Enviar";
-        mensajeEnvio.textContent = "No se pudo enviar, intenta otra vez.";
-        mensajeEnvio.className = "mensaje-envio error";
-      });
+    }).catch(function () {});
+
+    var lineas = [
+      "Hola, soy " + nombre + ".",
+      referencia ? ("Me interesa: " + referencia) : "Quisiera más información.",
+      "Mi teléfono: " + telefono
+    ];
+    if (formaPago) lineas.push("Forma de pago: " + formaPago);
+    if (fecha) lineas.push("Fecha que me gustaría la cita: " + fecha + (hora ? (" a las " + hora) : ""));
+    if (mensaje) lineas.push(mensaje);
+
+    var textoWA = encodeURIComponent(lineas.join("\n"));
+    window.open("https://wa.me/" + WHATSAPP_ALEJANDRA + "?text=" + textoWA, "_blank", "noopener");
+
+    mensajeEnvio.textContent = "¡Listo! Te llevamos a WhatsApp para que confirmes.";
+    mensajeEnvio.className = "mensaje-envio ok";
+    setTimeout(cerrarModal, 1000);
+  });
+
+  llenarSelect(document.getElementById("filtro-estado"), ESTADOS_REPUBLICA, "Todos");
+
+  document.getElementById("filtro-estado").addEventListener("change", function () {
+    actualizarOpcionesDependientes();
+    renderizarLista();
+  });
+  document.getElementById("filtro-municipio").addEventListener("change", function () {
+    actualizarOpcionesDependientes();
+    renderizarLista();
+  });
+  ["filtro-colonia", "filtro-tipo", "filtro-recamaras", "filtro-presupuesto", "filtro-pago"].forEach(function (id) {
+    document.getElementById(id).addEventListener("change", renderizarLista);
   });
 
   cargarPropiedades();

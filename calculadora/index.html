@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kit Financiero Inmobiliario · Raíz Segura Real Estate</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --verde:#2D6A4F; --verde-claro:#52B788; --verde-palido:#D8F3DC;
+  --crema:#F8F5F0; --crema-oscuro:#EDE8DF; --azul:#1B2B4B;
+  --texto:#1a1a1a; --suave:#5a5a5a; --muy-suave:#9a9a9a;
+  --blanco:#fff; --am:#FFF8E1; --ro:#FFEBEE; --ve:#E8F5E9;
+  --borde:rgba(45,106,79,0.15); --r:16px; --rs:8px;
+}
+html{scroll-behavior:smooth}
+body{font-family:'DM Sans',sans-serif;background:var(--crema);color:var(--texto);min-height:100vh;line-height:1.6}
+
+/* HEADER */
+header{background:var(--azul);color:var(--blanco);position:relative;overflow:hidden}
+.h-deco{position:absolute;top:-60px;right:-60px;width:300px;height:300px;border-radius:50%;background:rgba(82,183,136,.1);pointer-events:none}
+.h-inner{max-width:680px;margin:0 auto;padding:36px 24px 32px;position:relative;z-index:1}
+.marca{display:flex;align-items:center;gap:10px;margin-bottom:20px}
+.marca-ico{width:34px;height:34px;background:var(--verde-claro);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:17px}
+.marca-nm{font-family:'Playfair Display',serif;font-size:14px;color:rgba(255,255,255,.85)}
+.badge{display:inline-block;background:rgba(82,183,136,.25);color:var(--verde-claro);font-size:11px;font-weight:500;padding:4px 12px;border-radius:20px;letter-spacing:.06em;text-transform:uppercase;margin-bottom:10px}
+header h1{font-family:'Playfair Display',serif;font-size:clamp(24px,5vw,36px);font-weight:700;line-height:1.2;margin-bottom:8px}
+header h1 span{color:var(--verde-claro)}
+header p{font-size:14px;color:rgba(255,255,255,.6);max-width:480px;font-weight:300}
+
+/* TABS */
+.tabs-nav{background:var(--azul);display:flex;justify-content:center;gap:0;border-top:1px solid rgba(255,255,255,.08)}
+.tab-btn{background:none;border:none;color:rgba(255,255,255,.5);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;padding:13px 18px;cursor:pointer;border-bottom:2px solid transparent;transition:all .2s;white-space:nowrap}
+.tab-btn.active{color:var(--verde-claro);border-bottom-color:var(--verde-claro)}
+.tab-btn:hover{color:rgba(255,255,255,.8)}
+.tab-panel{display:none}
+.tab-panel.active{display:block}
+
+/* MAIN */
+main{max-width:680px;margin:0 auto;padding:24px 24px 56px}
+.sl{font-size:11px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--verde);margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.sl::after{content:'';flex:1;height:1px;background:var(--borde)}
+
+/* FORMULARIO */
+.form-card{background:var(--blanco);border:1px solid var(--borde);border-radius:var(--r);padding:22px;margin-bottom:18px}
+.form-titulo{font-family:'Playfair Display',serif;font-size:18px;font-weight:600;color:var(--azul);margin-bottom:6px}
+.form-sub{font-size:13px;color:var(--suave);margin-bottom:16px;line-height:1.6}
+.fg{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}
+@media(max-width:480px){.fg{grid-template-columns:1fr}}
+.ff{display:flex;flex-direction:column;gap:5px}
+.ff label{font-size:12px;font-weight:500;color:var(--suave)}
+.ff input,.ff select{background:var(--crema);border:1px solid var(--borde);border-radius:var(--rs);padding:10px 13px;font-family:'DM Sans',sans-serif;font-size:14px;color:var(--texto);outline:none;transition:border-color .2s,box-shadow .2s;-webkit-appearance:none;appearance:none}
+.ff input:focus,.ff select:focus{border-color:var(--verde-claro);box-shadow:0 0 0 3px rgba(82,183,136,.12);background:var(--blanco)}
+.ff.full{grid-column:1/-1}
+.privacidad{font-size:11px;color:var(--muy-suave);margin-bottom:14px;line-height:1.5}
+
+/* NOTA ZONAS */
+.nz{background:var(--blanco);border:1px solid var(--borde);border-radius:var(--r);padding:13px 15px;margin-bottom:18px;display:flex;gap:10px;align-items:flex-start}
+.nz-ico{font-size:17px;flex-shrink:0;margin-top:1px}
+.nz-txt{font-size:12.5px;color:var(--suave);line-height:1.6}
+.nz-txt strong{color:var(--texto);display:block;margin-bottom:2px;font-size:13px}
+
+/* INPUTS CALC */
+.ig{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px}
+@media(max-width:480px){.ig{grid-template-columns:1fr}}
+.ic{background:var(--blanco);border:1px solid var(--borde);border-radius:var(--r);padding:14px 16px;transition:border-color .2s,box-shadow .2s}
+.ic:focus-within{border-color:var(--verde-claro);box-shadow:0 0 0 3px rgba(82,183,136,.12)}
+.ic label{display:block;font-size:12px;color:var(--suave);margin-bottom:6px;font-weight:500}
+.iw{display:flex;align-items:center;gap:5px}
+.ip{font-size:13px;color:var(--muy-suave)}
+.ic input{width:100%;border:none;outline:none;font-family:'DM Sans',sans-serif;font-size:17px;font-weight:500;color:var(--texto);background:transparent}
+.ic input::placeholder{color:var(--crema-oscuro);font-weight:300}
+
+/* BOTONES */
+.btn{width:100%;padding:15px 22px;background:var(--verde);color:var(--blanco);border:none;border-radius:var(--r);font-family:'DM Sans',sans-serif;font-size:15px;font-weight:500;cursor:pointer;transition:background .2s,transform .1s;display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:0}
+.btn:hover{background:#245c43}
+.btn:active{transform:scale(.99)}
+.mb18{margin-bottom:18px}
+.mb28{margin-bottom:28px}
+
+/* RESULTADOS */
+#resultados{display:none}
+@keyframes fu{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+
+.sw{background:var(--blanco);border:1px solid var(--borde);border-radius:var(--r);padding:18px 20px;margin-bottom:14px}
+.sh{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.se{font-size:15px;font-weight:500}
+.sp{font-size:13px;color:var(--suave)}
+.bb{height:8px;background:var(--crema-oscuro);border-radius:4px;overflow:hidden}
+.bf{height:100%;border-radius:4px;transition:width .8s cubic-bezier(.4,0,.2,1)}
+
+.rc{background:var(--azul);border-radius:var(--r);padding:20px 22px;margin-bottom:10px;color:var(--blanco);position:relative;overflow:hidden}
+.rc::before{content:'🏠';position:absolute;right:18px;top:50%;transform:translateY(-50%);font-size:60px;opacity:.07}
+.rc .rl{font-size:11px;color:rgba(255,255,255,.5);margin-bottom:5px;font-weight:500;letter-spacing:.06em;text-transform:uppercase}
+.rc .rv{font-family:'Playfair Display',serif;font-size:clamp(16px,3.5vw,24px);font-weight:700;color:var(--verde-claro);margin-bottom:8px}
+.rc .rt{font-size:13px;color:rgba(255,255,255,.7);line-height:1.65}
+.zn{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:var(--rs);padding:10px 13px;margin-top:10px;font-size:12px;color:rgba(255,255,255,.56);line-height:1.6}
+.zn strong{color:rgba(255,255,255,.82)}
+
+.bc{background:var(--azul);border-radius:var(--r);padding:18px 20px;margin-bottom:10px;color:var(--blanco)}
+.bc .bt{font-size:11px;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.06em;margin-bottom:7px}
+.bc .bv{font-family:'Playfair Display',serif;font-size:21px;font-weight:700;color:#FFD166;margin-bottom:6px}
+.bc .bm{font-size:13px;color:rgba(255,255,255,.68);line-height:1.65}
+
+.rg{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:10px 0 14px}
+@media(max-width:480px){.rg{grid-template-columns:1fr}}
+.rk{background:var(--blanco);border:1px solid var(--borde);border-radius:var(--r);padding:14px 16px}
+.rk-l{font-size:11px;color:var(--muy-suave);font-weight:500;letter-spacing:.04em;text-transform:uppercase;margin-bottom:5px}
+.rk-v{font-size:19px;font-weight:500;font-family:'Playfair Display',serif}
+.rk-v.g{color:var(--verde)}.rk-v.a{color:#c17f00}.rk-v.r{color:#b71c1c}
+.rk-s{font-size:12px;color:var(--muy-suave);margin-top:2px}
+
+.msg{border-radius:var(--r);padding:14px 17px;margin-bottom:14px;font-size:13.5px;line-height:1.7;border-left:4px solid}
+.msg.ok{background:var(--ve);border-color:var(--verde);color:#1b4332}
+.msg.warn{background:var(--am);border-color:#f59e0b;color:#78350f}
+.msg.alert{background:var(--ro);border-color:#ef4444;color:#7f1d1d}
+
+.aw{margin-bottom:14px}
+.ai{display:flex;gap:9px;align-items:flex-start;padding:10px 13px;border-radius:var(--rs);margin-bottom:7px;font-size:13px;line-height:1.5}
+.ai.ok{background:var(--ve);color:#1b4332}.ai.warn{background:var(--am);color:#78350f}.ai.bad{background:var(--ro);color:#7f1d1d}
+.ai-ico{font-size:14px;flex-shrink:0;line-height:1.5}
+
+.recc{background:var(--blanco);border:1px solid var(--borde);border-radius:var(--r);padding:18px 20px;margin-bottom:18px}
+.recc h3{font-family:'Playfair Display',serif;font-size:15px;font-weight:500;color:var(--texto);margin-bottom:12px}
+.ri{display:flex;gap:9px;align-items:flex-start;padding:9px 0;border-bottom:1px solid var(--crema-oscuro);font-size:13px;color:var(--suave);line-height:1.6}
+.ri:last-child{border-bottom:none}
+.rn{font-size:11px;font-weight:500;color:var(--verde);background:var(--verde-palido);border-radius:50%;width:20px;height:20px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px}
+
+/* CTA DOBLE */
+.cta2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:22px}
+@media(max-width:480px){.cta2{grid-template-columns:1fr}}
+.cb{border-radius:var(--r);padding:20px 18px;text-align:center}
+.cb.az{background:var(--azul);color:var(--blanco)}.cb.vd{background:var(--verde);color:var(--blanco)}
+.cb-badge{display:inline-block;font-size:10px;font-weight:500;letter-spacing:.07em;text-transform:uppercase;padding:3px 10px;border-radius:20px;margin-bottom:9px}
+.cb.az .cb-badge{background:rgba(255,255,255,.1);color:rgba(255,255,255,.7)}
+.cb.vd .cb-badge{background:rgba(255,255,255,.2);color:rgba(255,255,255,.9)}
+.cb h3{font-family:'Playfair Display',serif;font-size:15px;font-weight:700;margin-bottom:7px;line-height:1.3}
+.cb p{font-size:12px;color:rgba(255,255,255,.7);margin-bottom:14px;line-height:1.6}
+.btn-sm{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:10px 16px;border-radius:var(--rs);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;text-decoration:none;transition:transform .15s;width:100%}
+.btn-sm:hover{transform:scale(1.02)}
+.cb.az .btn-sm{background:rgba(255,255,255,.12);color:var(--blanco);border:1px solid rgba(255,255,255,.2)}
+.cb.vd .btn-sm{background:var(--blanco);color:var(--verde)}
+
+.disc{text-align:center;font-size:11px;color:var(--muy-suave);line-height:1.7;padding-top:10px;border-top:1px solid var(--crema-oscuro)}
+
+/* TOAST */
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--azul);color:var(--blanco);padding:11px 20px;border-radius:30px;font-size:13px;font-weight:500;box-shadow:0 8px 24px rgba(0,0,0,.2);transition:transform .35s ease;z-index:999;white-space:nowrap}
+.toast.show{transform:translateX(-50%) translateY(0)}
+
+/* ══ CHECKLIST ══ */
+.cl-intro{background:var(--blanco);border:1px solid var(--borde);border-radius:var(--r);padding:16px 18px;margin-bottom:16px;font-size:13.5px;color:var(--suave);line-height:1.7}
+
+/* TERMÓMETRO */
+.termometro{background:var(--blanco);border:1px solid var(--borde);border-radius:var(--r);padding:18px 20px;margin-bottom:20px}
+.term-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.term-titulo{font-size:12px;font-weight:500;color:var(--suave);text-transform:uppercase;letter-spacing:.07em}
+.term-pct{font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:var(--verde)}
+.term-bar-bg{height:10px;background:var(--crema-oscuro);border-radius:5px;overflow:hidden;margin-bottom:14px}
+.term-fill{height:100%;border-radius:5px;transition:width .7s ease,background .5s ease}
+.term-niveles{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:14px}
+.tnivel{border-radius:var(--rs);padding:8px 6px;text-align:center;opacity:.35;transition:opacity .3s,transform .3s}
+.tnivel.activo{opacity:1;transform:scale(1.03)}
+.tnivel .tn-ico{font-size:18px;margin-bottom:3px}
+.tnivel .tn-lbl{font-size:10px;font-weight:500;line-height:1.3}
+.tnivel.n1{background:#FFEBEE;color:#b71c1c}
+.tnivel.n2{background:#FFF8E1;color:#c17f00}
+.tnivel.n3{background:#E8F5F9;color:#0277bd}
+.tnivel.n4{background:var(--ve);color:#1b4332}
+.term-desc{border-radius:var(--rs);padding:12px 14px;font-size:13px;line-height:1.65}
+.term-desc.n1{background:#FFEBEE;color:#7f1d1d}
+.term-desc.n2{background:var(--am);color:#78350f}
+.term-desc.n3{background:#E8F5F9;color:#01579b}
+.term-desc.n4{background:var(--ve);color:#1b4332}
+
+.cs{margin-bottom:16px}
+.cs-title{font-family:'Playfair Display',serif;font-size:15px;font-weight:500;color:var(--azul);margin-bottom:10px;display:flex;align-items:center;gap:7px}
+.ci{display:flex;align-items:flex-start;gap:11px;padding:10px 13px;background:var(--blanco);border:1px solid var(--borde);border-radius:var(--rs);margin-bottom:7px;cursor:pointer;transition:background .15s}
+.ci:hover{background:var(--verde-palido)}
+.ci.done{background:var(--verde-palido);border-color:var(--verde-claro)}
+.ci.done .ct{text-decoration:line-through;color:var(--muy-suave)}
+.cbox{width:20px;height:20px;border:2px solid var(--borde);border-radius:4px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:11px;transition:all .15s;margin-top:2px}
+.ci.done .cbox{background:var(--verde);border-color:var(--verde);color:#fff}
+.ct{font-size:13px;color:var(--texto);line-height:1.5}
+.csub{font-size:11.5px;color:var(--muy-suave);margin-top:2px}
+
+/* ══ MINIGUÍA ══ */
+.gh{background:var(--azul);border-radius:var(--r);padding:24px 22px;margin-bottom:16px;color:var(--blanco)}
+.gh h2{font-family:'Playfair Display',serif;font-size:20px;font-weight:700;margin-bottom:8px;line-height:1.3}
+.gh p{font-size:13.5px;color:rgba(255,255,255,.62);line-height:1.7}
+.pc{background:var(--blanco);border:1px solid var(--borde);border-radius:var(--r);padding:18px 20px;margin-bottom:10px;display:flex;gap:14px}
+.pn{font-family:'Playfair Display',serif;font-size:28px;font-weight:700;color:var(--verde-palido);line-height:1;flex-shrink:0;width:32px}
+.pcon h4{font-size:14px;font-weight:500;color:var(--azul);margin-bottom:5px}
+.pcon p{font-size:13px;color:var(--suave);line-height:1.65}
+.ptip{margin-top:9px;background:var(--verde-palido);border-radius:var(--rs);padding:9px 11px;font-size:12px;color:var(--verde);line-height:1.5}
+.tc{background:var(--blanco);border:1px solid var(--borde);border-radius:var(--rs);padding:12px 14px;margin-bottom:7px}
+.tc strong{font-size:13px;color:var(--azul);display:block;margin-bottom:3px}
+.tc span{font-size:12.5px;color:var(--suave);line-height:1.6}
+.ag{background:var(--am);border-left:4px solid #f59e0b;border-radius:var(--rs);padding:12px 14px;margin-bottom:14px;font-size:13px;color:#78350f;line-height:1.6}
+
+/* SEÑALES */
+.senales{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px}
+@media(max-width:480px){.senales{grid-template-columns:1fr}}
+.senal-card{border-radius:var(--r);padding:16px 18px}
+.senal-card.si{background:var(--ve);border:1px solid rgba(45,106,79,.2)}
+.senal-card.no{background:var(--ro);border:1px solid rgba(183,28,28,.12)}
+.senal-card h4{font-size:13px;font-weight:600;margin-bottom:10px}
+.senal-card.si h4{color:#1b4332}
+.senal-card.no h4{color:#7f1d1d}
+.senal-item{display:flex;gap:7px;align-items:flex-start;font-size:12.5px;line-height:1.5;margin-bottom:6px}
+.senal-card.si .senal-item{color:#2d6a4f}
+.senal-card.no .senal-item{color:#9b1c1c}
+.senal-ico{flex-shrink:0;margin-top:1px}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="h-deco"></div>
+  <div class="h-inner">
+    <div class="marca">
+      <div class="marca-ico">🏡</div>
+      <span class="marca-nm">Raíz Segura Real Estate · Alejandra García</span>
+    </div>
+    <div class="badge">Kit Financiero Inmobiliario</div>
+    <h1>Tu guía completa para<br><span>comprar casa en México</span></h1>
+    <p>Calculadora · Checklist de preparación · Miniguía estratégica</p>
+  </div>
+</header>
+
+<div class="tabs-nav">
+  <button class="tab-btn active" onclick="tab('calculadora',this)">🧮 Calculadora</button>
+  <button class="tab-btn" onclick="tab('checklist',this)">✅ Checklist</button>
+  <button class="tab-btn" onclick="tab('guia',this)">📖 Guía</button>
+</div>
+
+<!-- ══════════════ TAB 1: CALCULADORA ══════════════ -->
+<div id="tab-calculadora" class="tab-panel active">
+<main>
+
+  <!-- FORMULARIO -->
+  <div id="bloque-form">
+    <div class="form-card">
+      <div class="form-titulo">Primero, cuéntame un poco de ti 👋</div>
+      <div class="form-sub">Ingresa tus datos para personalizar tus resultados y que Alejandra pueda orientarte mejor.</div>
+      <div class="fg">
+        <div class="ff">
+          <label>Nombre completo *</label>
+          <input type="text" id="f-nombre" placeholder="Tu nombre completo" autocomplete="name">
+        </div>
+        <div class="ff">
+          <label>Teléfono / WhatsApp *</label>
+          <input type="tel" id="f-telefono" placeholder="55 1234 5678" autocomplete="tel">
+        </div>
+        <div class="ff full">
+          <label>Correo electrónico *</label>
+          <input type="email" id="f-correo" placeholder="tucorreo@email.com" autocomplete="email">
+        </div>
+        <div class="ff">
+          <label>País *</label>
+          <select id="f-pais" onchange="actualizarCiudades()">
+            <option value="">Selecciona tu país</option>
+            <option value="México">México</option>
+            <option value="Estados Unidos">Estados Unidos</option>
+            <option value="Colombia">Colombia</option>
+            <option value="Argentina">Argentina</option>
+            <option value="España">España</option>
+            <option value="Otro">Otro</option>
+          </select>
+        </div>
+        <div class="ff">
+          <label>Ciudad / Estado *</label>
+          <input type="text" id="f-ciudad" placeholder="Ej. Querétaro, CDMX...">
+        </div>
+      </div>
+      <div class="privacidad">🔒 Tu información es privada y solo será usada por Alejandra García - Raíz Segura Real Estate para orientarte de forma personalizada.</div>
+      <button class="btn mb18" onclick="validarForm()"><span>Continuar a la calculadora</span><span>→</span></button>
+    </div>
+  </div>
+
+  <!-- CALCULADORA -->
+  <div id="bloque-calc" style="display:none">
+    <div class="nz">
+      <div class="nz-ico">📍</div>
+      <div class="nz-txt">
+        <strong>Los precios varían mucho según la zona</strong>
+        Esta calculadora usa rangos de referencia nacionales. El mercado en Querétaro, CDMX, Guadalajara o la Riviera Maya puede ser muy diferente al de ciudades intermedias. Úsala para entender qué ajustes necesitas en tus finanzas, no como precio exacto de una propiedad específica.
+      </div>
+    </div>
+
+    <p class="sl">Tus números financieros</p>
+    <div class="ig">
+      <div class="ic"><label>💰 Ingreso mensual neto</label><div class="iw"><span class="ip">$</span><input type="number" id="ingreso" placeholder="20,000" min="0"></div></div>
+      <div class="ic"><label>💳 Deudas mensuales actuales</label><div class="iw"><span class="ip">$</span><input type="number" id="deudas" placeholder="3,000" min="0"></div></div>
+      <div class="ic"><label>🏦 Ahorro disponible / enganche</label><div class="iw"><span class="ip">$</span><input type="number" id="ahorro" placeholder="100,000" min="0"></div></div>
+      <div class="ic"><label>🏡 Mensualidad cómoda que pagarías</label><div class="iw"><span class="ip">$</span><input type="number" id="mensualidad" placeholder="5,000" min="0"></div></div>
+    </div>
+    <button class="btn mb28" onclick="calcular()"><span>Ver mis resultados</span><span>→</span></button>
+
+    <div id="resultados">
+      <p class="sl">Tu salud financiera</p>
+      <div class="sw">
+        <div class="sh"><span class="se" id="salud-e">—</span><span class="sp" id="salud-p"></span></div>
+        <div class="bb"><div class="bf" id="barra" style="width:0%"></div></div>
+      </div>
+
+      <p class="sl">Tu situación real</p>
+      <div id="b-rango" style="display:none">
+        <div class="rc">
+          <div class="rl">Rango estimado de búsqueda</div>
+          <div class="rv" id="rango-t">—</div>
+          <div class="rt" id="rango-m"></div>
+          <div class="zn">📍 <strong>Recuerda:</strong> este rango varía según tu zona. En algunas ciudades las propiedades parten de $900K, en otras de $1.5M o más. Un asesor puede mostrarte las opciones reales en <em>tu zona específica</em>.</div>
+        </div>
+      </div>
+      <div id="b-brecha" style="display:none">
+        <div class="bc">
+          <div class="bt">¿Cuánto falta para llegar al mercado?</div>
+          <div class="bv" id="brecha-v">—</div>
+          <div class="bm" id="brecha-m"></div>
+          <div class="zn">📍 En algunas ciudades del interior existen propiedades desde $600K–$800K. Si tu zona o plan de vida lo permite, podría ser una opción. Cuéntale a Alejandra dónde estás y lo revisan juntas.</div>
+        </div>
+      </div>
+
+      <div class="rg">
+        <div class="rk"><div class="rk-l">Ingreso libre mensual</div><div class="rk-v" id="libre-v">—</div><div class="rk-s">después de deudas y mensualidad</div></div>
+        <div class="rk"><div class="rk-l">Enganche disponible</div><div class="rk-v" id="eng-v">—</div><div class="rk-s" id="eng-s">de tu ahorro actual</div></div>
+      </div>
+
+      <div class="msg" id="msg-p"><span id="msg-t"></span></div>
+
+      <p class="sl">Alertas rápidas</p>
+      <div class="aw" id="alertas"></div>
+
+      <p class="sl">Recomendaciones para ti</p>
+      <div class="recc"><h3>Próximos pasos según tu perfil</h3><div id="recs"></div></div>
+
+      <p class="sl">¿Cuál es tu siguiente paso?</p>
+      <div class="cta2" id="cta2"></div>
+
+      <div class="disc">Esta herramienta es orientativa. No constituye asesoría financiera, legal ni hipotecaria formal. Los precios varían por zona.<br><strong>Raíz Segura Real Estate · Alejandra García</strong> · raizsegura.realstate@gmail.com</div>
+    </div>
+  </div>
+</main>
+</div>
+
+<!-- ══════════════ TAB 2: CHECKLIST ══════════════ -->
+<div id="tab-checklist" class="tab-panel">
+<main>
+  <div class="cl-intro">
+    Responde con honestidad cada punto. Este checklist está diseñado para ayudarte a ver con claridad en qué parte del camino estás — sin juicios, sin presión. Al final verás tu nivel de preparación real. 🏡
+  </div>
+
+  <!-- TERMÓMETRO -->
+  <p class="sl">Tu nivel de preparación</p>
+  <div class="termometro">
+    <div class="term-header">
+      <span class="term-titulo">Termómetro de preparación</span>
+      <span class="term-pct" id="term-pct">0%</span>
+    </div>
+    <div class="term-bar-bg"><div class="term-fill" id="term-fill" style="width:0%;background:#ef4444"></div></div>
+    <div class="term-niveles">
+      <div class="tnivel n1" id="nv1"><div class="tn-ico">🌱</div><div class="tn-lbl">Inicio del<br>camino</div></div>
+      <div class="tnivel n2" id="nv2"><div class="tn-ico">🔨</div><div class="tn-lbl">En<br>preparación</div></div>
+      <div class="tnivel n3" id="nv3"><div class="tn-ico">🚀</div><div class="tn-lbl">Casi<br>listo/a</div></div>
+      <div class="tnivel n4" id="nv4"><div class="tn-ico">🏠</div><div class="tn-lbl">Listo/a<br>para comprar</div></div>
+    </div>
+    <div class="term-desc n1" id="term-desc">
+      Ve marcando los puntos que ya tienes cubiertos para ver tu nivel de preparación.
+    </div>
+  </div>
+
+  <!-- SECCIÓN 1 -->
+  <div class="cs">
+    <div class="cs-title">💰 1. Claridad financiera</div>
+    <div class="ci" onclick="check(this)"><div class="cbox"></div><div><div class="ct">Tengo ingresos estables actualmente</div></div></div>
+    <div class="ci" onclick="check(this)"><div class="cbox"></div><div><div class="ct">Tengo control básico de mis gastos y deudas</div></div></div>
+    <div class="ci" onclick="check(this)"><div class="cbox"></div><div><div class="ct">Tengo posibilidad de ahorrar mensualmente</div></div></div>
+    <div class="ci" onclick="check(this)"><div class="cbox"></div><div><div class="ct">Sé aproximadamente cuánto podría pagar mensualmente sin comprometerme de más</div></div></div>
+    <div class="ci" onclick="check(this)"><div class="cbox"></div><div><div class="ct">Tengo ahorros o posibilidad de reunir un enganche</div></div></div>
+  </div>
+
+  <!-- SECCIÓN 2 -->
+  <div class="cs">
+    <div class="cs-title">🏦 2. Crédito y capacidad de compra</div>
+    <div class="ci" onclick="check(this)"><div class="cbox"></div><div><div class="ct">Tengo acceso a algún tipo de crédito</div><div class="csub">Infonavit, bancario, Cofinavit, Fovissste, etc.</div></div></div>
+    <div class="ci" onclick="check(this)"><div class="cbox"></div><div><div class="ct">Sé aproximadamente cuál es el monto al que podría acceder</div></div></div>
+    <div class="ci" onclick="check(this)"><div class="cbox"></div><div><div class="ct">Conozco mi situación crediticia actual</div><div class="csub">Sé cómo estoy en Buró de Crédito</div></div></div>
+    <div class="ci" onclick="check(this)"><div class="cbox"></div><div><div class="ct">Estoy al corriente con pagos importantes y deudas</div></div></div>
+  </div>
+
+  <!-- SECCIÓN 3 -->
+  <div class="cs">
+    <div class="cs-title">🏠 3. Claridad sobre la propiedad</div>
+    <div class="ci" onclick="check(this)"><div class="cbox"></div><div><div class="ct">Tengo claridad sobre la zona donde me gustaría comprar</div></div></div>
+    <div class="ci" onclick="check(this)"><div class="cbox"></div><div><div class="ct">Sé si estoy buscando una propiedad para vivir o para inversión</div></div></div>
+    <div class="ci" onclick="check(this)"><div class="cbox"></div><div><div class="ct">Tengo una idea del tipo de propiedad que me interesa</div><div class="csub">Casa, departamento, terreno, etc.</div></div></div>
+    <div class="ci" onclick="check(this)"><div class="cbox"></div><div><div class="ct">Tengo claridad sobre mi rango de presupuesto</div></div></div>
+  </div>
+
+  <!-- SECCIÓN 4 -->
+  <div class="cs">
+    <div class="cs-title">📋 4. Preparación y proceso</div>
+    <div class="ci" onclick="check(this)"><div class="cbox"></div><div><div class="ct">Sé cuáles son algunos requisitos básicos para comprar una propiedad</div></div></div>
+    <div class="ci" onclick="check(this)"><div class="cbox"></div><div><div class="ct">Tengo una idea general del proceso de compra</div></div></div>
+    <div class="ci" onclick="check(this)"><div class="cbox"></div><div><div class="ct">Estoy dispuesto/a a comprometerme financieramente a largo plazo</div></div></div>
+    <div class="ci" onclick="check(this)"><div class="cbox"></div><div><div class="ct">Estoy buscando comprar desde la claridad y no solo desde la emoción o presión</div></div></div>
+  </div>
+
+  <!-- SECCIÓN 5 -->
+  <div class="cs">
+    <div class="cs-title">📄 5. Documentación básica</div>
+    <div class="ci" onclick="check(this)"><div class="cbox"></div><div><div class="ct">Tengo identificación oficial vigente (INE o pasaporte)</div></div></div>
+    <div class="ci" onclick="check(this)"><div class="cbox"></div><div><div class="ct">Tengo CURP y RFC activos</div></div></div>
+    <div class="ci" onclick="check(this)"><div class="cbox"></div><div><div class="ct">Tengo comprobantes de ingresos recientes</div><div class="csub">Recibos de nómina o estados de cuenta si eres independiente</div></div></div>
+    <div class="ci" onclick="check(this)"><div class="cbox"></div><div><div class="ct">Tengo o puedo conseguir estados de cuenta bancarios de los últimos 3 meses</div></div></div>
+    <div class="ci" onclick="check(this)"><div class="cbox"></div><div><div class="ct">Tengo comprobante de domicilio reciente (no mayor a 3 meses)</div></div></div>
+  </div>
+
+  <div class="cta2">
+    <div class="cb az">
+      <div class="cb-badge">Todavía me preparo</div>
+      <h3>Quiero un plan personalizado</h3>
+      <p>Revisamos juntas tu situación y trazamos el camino exacto para llegar a tu primera propiedad.</p>
+      <a class="btn-sm" href="https://wa.link/vjorgs" target="_blank">💬 Agendar asesoría 1 a 1</a>
+    </div>
+    <div class="cb vd">
+      <div class="cb-badge">Ya estoy lista/o</div>
+      <h3>Ver propiedades en mi rango</h3>
+      <p>Si ya tienes la mayoría cubierta, es momento de buscar opciones reales.</p>
+      <a class="btn-sm" href="https://wa.link/drk023" target="_blank">🏠 Ver propiedades disponibles</a>
+    </div>
+  </div>
+</main>
+</div>
+
+<!-- ══════════════ TAB 3: MINIGUÍA ══════════════ -->
+<div id="tab-guia" class="tab-panel">
+<main>
+  <div class="gh">
+    <h2>¿Realmente estás listo/a para comprar una propiedad?</h2>
+    <p>Una guía honesta de claridad financiera y patrimonial. Porque comprar bien es más importante que comprar rápido.</p>
+  </div>
+  <div class="ag">⚠️ <strong>Importante:</strong> Esta guía es educativa y orientativa. Cada situación es diferente. Siempre asesórate con un profesional antes de tomar decisiones financieras importantes.</div>
+
+  <p class="sl">Antes de empezar</p>
+  <div class="pc" style="background:var(--blanco);flex-direction:column;gap:8px">
+    <p style="font-size:13.5px;color:var(--suave);line-height:1.7">La mayoría cree que el primer paso para comprar casa es buscar casas. Pero en realidad, antes de elegir una propiedad hay algo mucho más importante: <strong style="color:var(--azul)">entender si financieramente y estratégicamente estás preparado/a para dar ese paso.</strong></p>
+    <p style="font-size:13.5px;color:var(--suave);line-height:1.7">Porque comprar una propiedad no solo se trata de "si te alcanza" o "si el banco te presta". También se trata de estabilidad, claridad, estrategia y tranquilidad financiera.</p>
+  </div>
+
+  <p class="sl" style="margin-top:20px">Los 6 pasos reales</p>
+
+  <div class="pc">
+    <div class="pn">1</div>
+    <div class="pcon">
+      <h4>Ordena tus finanzas antes de buscar propiedades</h4>
+      <p>Muchas personas empiezan buscando casas desde la emoción y no desde la claridad financiera. Es como entrar a una tienda y enamorarte de unos zapatos de diseñador sin revisar cuánto puedes gastar. Te los pruebas, te emocionas, y después descubres que no te alcanza. Con las propiedades pasa exactamente lo mismo. Primero entiende qué rango realmente puedes sostener.</p>
+      <div class="ptip">💡 Regla de oro: idealmente tu crédito hipotecario no debería superar el 30% de tu ingreso mensual neto.</div>
+    </div>
+  </div>
+
+  <div class="pc">
+    <div class="pn">2</div>
+    <div class="pcon">
+      <h4>Revisa tu historial antes de acercarte al banco</h4>
+      <p>Muchas personas evitan revisar su Buró de Crédito por miedo. Pero no verlo no cambia la situación. He visto personas que pensaban que jamás podrían comprar y en realidad sí tenían posibilidades. Y también personas que creían estar listas pero tenían detalles pequeños que frenaban el proceso. Tener claridad siempre será mejor que vivir desde la incertidumbre.</p>
+      <div class="ptip">💡 Puedes consultar tu reporte gratis una vez al año en burodecredito.com.mx</div>
+    </div>
+  </div>
+
+  <div class="pc">
+    <div class="pn">3</div>
+    <div class="pcon">
+      <h4>Tener acceso a crédito no siempre significa estar listo/a</h4>
+      <p>Muchas personas piensan: "si el banco me presta, entonces sí puedo." Pero una cosa es que te aprueben un crédito y otra muy diferente es que financieramente sea saludable para ti. Hay personas que sí califican, pero terminarían viviendo demasiado presionadas. Y también hay personas que todavía no califican pero están mucho más cerca de lo que creen.</p>
+      <div style="margin-top:10px">
+        <div class="tc"><strong>Infonavit</strong><span>Para trabajadores formales. Se acumulan puntos. Puede combinarse con crédito bancario.</span></div>
+        <div class="tc"><strong>Fovissste</strong><span>Para trabajadores del gobierno federal. Condiciones propias y similares al Infonavit.</span></div>
+        <div class="tc"><strong>Crédito bancario</strong><span>Para formales o independientes con ingresos comprobables. Más flexible en montos.</span></div>
+        <div class="tc"><strong>Cofinavit / combinado</strong><span>Combinas subcuenta Infonavit con crédito bancario para mayor poder de compra.</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="pc">
+    <div class="pn">4</div>
+    <div class="pcon">
+      <h4>Busca tu propiedad con emoción… pero también con estrategia</h4>
+      <p>Una propiedad puede verse hermosa en fotos. Pero una decisión inmobiliaria va mucho más allá de "me gustó". Muchas personas terminan comprando desde presión, comparación, urgencia o miedo a quedarse atrás. Y después descubren tráfico, gastos ocultos, mala ubicación o mensualidades incómodas. La emoción importa. Pero la claridad también.</p>
+      <div class="ptip">💡 Antes de decidir, compara no solo propiedades — también cómo te sentirías financieramente viviendo ahí mes a mes.</div>
+    </div>
+  </div>
+
+  <div class="pc">
+    <div class="pn">5</div>
+    <div class="pcon">
+      <h4>Comprar una propiedad implica más que el enganche</h4>
+      <p>Muchas personas ahorran pensando únicamente en el enganche. Y después aparecen gastos notariales, avalúos, escrituración, mudanza, adecuaciones, mantenimiento, seguros y emergencias. Comprar una propiedad no debería dejarte financieramente ahorcado/a desde el primer mes.</p>
+      <div class="ptip">💡 Los gastos de escrituración normalmente representan entre el 5% y 7% del valor de la propiedad. Tenlos separados de tu enganche.</div>
+    </div>
+  </div>
+
+  <div class="pc">
+    <div class="pn">6</div>
+    <div class="pcon">
+      <h4>¿Comprar para vivir o para invertir?</h4>
+      <p>Esta pregunta cambia muchísimo la estrategia. No es lo mismo buscar patrimonio familiar que buscar rentabilidad, plusvalía o flujo de efectivo. Muchas personas comienzan buscando "la casa ideal" sin tener claridad sobre el verdadero objetivo detrás de la compra. Cuando no existe claridad, normalmente aparecen decisiones impulsivas.</p>
+      <div class="ptip">💡 Antes de elegir, pregúntate: ¿qué quiero construir realmente con esta compra?</div>
+    </div>
+  </div>
+
+  <p class="sl" style="margin-top:20px">¿En dónde estás tú?</p>
+  <div class="senales">
+    <div class="senal-card si">
+      <h4>✅ Señales de que probablemente ya estás más cerca</h4>
+      <div class="senal-item"><span class="senal-ico">✦</span><span>Tienes ingresos relativamente estables</span></div>
+      <div class="senal-item"><span class="senal-ico">✦</span><span>Tienes claridad sobre tu presupuesto</span></div>
+      <div class="senal-item"><span class="senal-ico">✦</span><span>Tienes capacidad de ahorro o enganche</span></div>
+      <div class="senal-item"><span class="senal-ico">✦</span><span>Revisaste algún tipo de crédito disponible</span></div>
+      <div class="senal-item"><span class="senal-ico">✦</span><span>Tienes idea clara de la zona que te interesa</span></div>
+      <div class="senal-item"><span class="senal-ico">✦</span><span>Sabes si buscas patrimonio o inversión</span></div>
+      <div class="senal-item"><span class="senal-ico">✦</span><span>Estás buscando desde claridad y no solo desde emoción</span></div>
+    </div>
+    <div class="senal-card no">
+      <h4>⚠️ Señales de que todavía necesitas prepararte un poco más</h4>
+      <div class="senal-item"><span class="senal-ico">◦</span><span>No tienes claridad sobre tus ingresos reales</span></div>
+      <div class="senal-item"><span class="senal-ico">◦</span><span>Dependes completamente de tarjetas para sobrevivir</span></div>
+      <div class="senal-item"><span class="senal-ico">◦</span><span>No sabes cuánto podrías pagar cómodamente</span></div>
+      <div class="senal-item"><span class="senal-ico">◦</span><span>No conoces el proceso básico de compra</span></div>
+      <div class="senal-item"><span class="senal-ico">◦</span><span>No tienes ahorros para gastos iniciales</span></div>
+      <div class="senal-item"><span class="senal-ico">◦</span><span>Estás buscando desde presión y no desde estrategia</span></div>
+    </div>
+  </div>
+
+  <div class="pc" style="background:var(--azul);color:var(--blanco);flex-direction:column;gap:8px;border:none">
+    <p style="font-family:'Playfair Display',serif;font-size:16px;font-weight:600;color:var(--blanco)">Lo más importante no es comprar rápido</p>
+    <p style="font-size:13px;color:rgba(255,255,255,.72);line-height:1.7">La mayoría piensa que el objetivo es comprar lo antes posible. Pero muchas veces la mejor decisión es comprar correctamente. Una propiedad puede convertirse en tranquilidad, patrimonio, estabilidad y paz mental. Pero también puede convertirse en presión si no existe una estrategia adecuada detrás.</p>
+  </div>
+
+  <div style="margin-top:16px" class="cta2">
+    <div class="cb az">
+      <div class="cb-badge">Quiero un plan claro</div>
+      <h3>Asesoría personalizada 1 a 1</h3>
+      <p>Revisamos tu situación completa y trazamos el camino exacto para tu compra.</p>
+      <a class="btn-sm" href="https://wa.link/vjorgs" target="_blank">💬 Agendar asesoría</a>
+    </div>
+    <div class="cb vd">
+      <div class="cb-badge">Ya estoy lista/o</div>
+      <h3>Ver propiedades en mi rango</h3>
+      <p>Hay opciones esperándote. Busquemos juntas la indicada para ti.</p>
+      <a class="btn-sm" href="https://wa.link/drk023" target="_blank">🏠 Ver propiedades</a>
+    </div>
+  </div>
+  <div class="disc" style="margin-top:4px">Esta guía es educativa y orientativa. No constituye asesoría legal, fiscal ni financiera formal.<br><strong>Raíz Segura Real Estate · Alejandra García</strong> · raizsegura.realstate@gmail.com</div>
+</main>
+</div>
+
+<div class="toast" id="toast">✅ Datos guardados</div>
+
+<script>
+const SHEETS_URL = 'PEGA_AQUI_TU_URL_DE_APPS_SCRIPT';
+const TOTAL_CK = 25;
+let datosU = {};
+let checklistScore = 0;
+
+// ── TABS
+function tab(id, btn) {
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
+  btn.classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// ── PAÍS / CIUDAD
+function actualizarCiudades() {
+  // Solo limpia el campo de ciudad si cambia de país
+  document.getElementById('f-ciudad').value = '';
+  document.getElementById('f-ciudad').placeholder =
+    document.getElementById('f-pais').value === 'México' ? 'Ej. Querétaro, CDMX, Monterrey...' :
+    document.getElementById('f-pais').value === 'Estados Unidos' ? 'Ej. Los Angeles, Houston...' :
+    'Tu ciudad o estado';
+}
+
+// ── FORM
+function validarForm() {
+  const n = document.getElementById('f-nombre').value.trim();
+  const t = document.getElementById('f-telefono').value.trim();
+  const e = document.getElementById('f-correo').value.trim();
+  const p = document.getElementById('f-pais').value;
+  const c = document.getElementById('f-ciudad').value.trim();
+  if (!n) { alert('Por favor ingresa tu nombre.'); document.getElementById('f-nombre').focus(); return; }
+  if (!t) { alert('Por favor ingresa tu teléfono.'); document.getElementById('f-telefono').focus(); return; }
+  if (!e || !e.includes('@')) { alert('Por favor ingresa un correo válido.'); document.getElementById('f-correo').focus(); return; }
+  if (!p) { alert('Por favor selecciona tu país.'); document.getElementById('f-pais').focus(); return; }
+  if (!c) { alert('Por favor ingresa tu ciudad.'); document.getElementById('f-ciudad').focus(); return; }
+  datosU = {nombre:n, telefono:t, correo:e, pais:p, ciudad:c};
+  document.getElementById('bloque-form').style.display = 'none';
+  document.getElementById('bloque-calc').style.display = 'block';
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// ── CHECKLIST + TERMÓMETRO
+function check(el) {
+  el.classList.toggle('done');
+  el.querySelector('.cbox').textContent = el.classList.contains('done') ? '✓' : '';
+  const done = document.querySelectorAll('.ci.done').length;
+  const pct  = Math.round((done / TOTAL_CK) * 100);
+  checklistScore = pct;
+
+  // barra
+  let color = pct < 25 ? '#ef4444' : pct < 50 ? '#f59e0b' : pct < 75 ? '#0288d1' : '#2D6A4F';
+  document.getElementById('term-fill').style.width = pct + '%';
+  document.getElementById('term-fill').style.background = color;
+  document.getElementById('term-pct').textContent = pct + '%';
+  document.getElementById('term-pct').style.color = color;
+
+  // niveles
+  ['nv1','nv2','nv3','nv4'].forEach(id=>document.getElementById(id).classList.remove('activo'));
+  const nivel = pct < 25 ? 'nv1' : pct < 50 ? 'nv2' : pct < 75 ? 'nv3' : 'nv4';
+  document.getElementById(nivel).classList.add('activo');
+
+  // descripción
+  const desc = document.getElementById('term-desc');
+  if (pct < 25) {
+    desc.className = 'term-desc n1';
+    desc.innerHTML = '🌱 <strong>Inicio del camino:</strong> Estás en la etapa de preparación inicial. No te preocupes, todo el mundo empieza aquí. Lo más valioso ahora es ganar claridad financiera básica: entender tus ingresos, ordenar tus deudas y empezar a ahorrar. <em>Una asesoría orientativa puede ayudarte a trazar un plan real desde cero.</em>';
+  } else if (pct < 50) {
+    desc.className = 'term-desc n2';
+    desc.innerHTML = '🔨 <strong>En preparación:</strong> Ya tienes algunas bases importantes, pero aún hay áreas clave que fortalecer antes de comprometerte con una compra. Con enfoque en los puntos pendientes, podrías estar en una posición mucho mejor en 3–6 meses. <em>Una asesoría puede ayudarte a identificar exactamente qué resolver primero.</em>';
+  } else if (pct < 75) {
+    desc.className = 'term-desc n3';
+    desc.innerHTML = '🚀 <strong>Casi listo/a:</strong> Tu perfil está tomando forma. Tienes claridad en varias áreas importantes y estás más cerca de comprar de lo que crees. Solo necesitas afinar algunos puntos específicos. <em>Es un buen momento para explorar opciones reales de crédito y propiedad en tu zona.</em>';
+  } else {
+    desc.className = 'term-desc n4';
+    desc.innerHTML = '🏠 <strong>Listo/a para comprar:</strong> Tu nivel de preparación es sólido. Tienes claridad financiera, documentación y estrategia. El siguiente paso natural es conectar con un asesor para buscar opciones concretas en tu rango y zona. <em>¡Es el momento de pasar a la acción!</em>';
+  }
+}
+
+// ── CALCULADORA
+function fmt(n) { return '$' + Math.round(n).toLocaleString('es-MX'); }
+
+function calcular() {
+  const ingreso = parseFloat(document.getElementById('ingreso').value) || 0;
+  const deudas  = parseFloat(document.getElementById('deudas').value)  || 0;
+  const ahorro  = parseFloat(document.getElementById('ahorro').value)  || 0;
+  const mens    = parseFloat(document.getElementById('mensualidad').value) || 0;
+  if (!ingreso) { alert('Por favor ingresa tu ingreso mensual neto.'); return; }
+
+  const libre   = ingreso - deudas - mens;
+  const pctD    = (deudas + mens) / ingreso;
+  const capM    = Math.max(0, ingreso * 0.30 - deudas);
+  const mU      = Math.min(mens, capM);
+  const PISO    = 1000000;
+  const precioC = mU > 0 ? mU * 200 + ahorro : ahorro;
+  const alcanza = precioC >= PISO;
+
+  // SALUD
+  let sPct, sColor, sEtiq, sTxt;
+  if      (pctD < .25) { sPct=88; sColor='#2D6A4F'; sEtiq='💚 Salud financiera sólida';          sTxt='Sólida'; }
+  else if (pctD < .35) { sPct=58; sColor='#f59e0b'; sEtiq='🟡 Perfil moderado — con potencial';  sTxt='Moderada'; }
+  else if (pctD < .50) { sPct=30; sColor='#f97316'; sEtiq='🟠 Requiere ajustes antes de comprar';sTxt='En proceso'; }
+  else                  { sPct=10; sColor='#ef4444'; sEtiq='🔴 Alta carga de deuda';              sTxt='Atención'; }
+  document.getElementById('barra').style.width = sPct+'%';
+  document.getElementById('barra').style.background = sColor;
+  document.getElementById('salud-e').textContent = sEtiq;
+  document.getElementById('salud-p').textContent = Math.round(pctD*100)+'% de deuda sobre ingreso';
+
+  // RANGO
+  let rangoTxt = '';
+  if (alcanza) {
+    document.getElementById('b-rango').style.display = 'block';
+    document.getElementById('b-brecha').style.display = 'none';
+    const rMin = Math.max(PISO, precioC*.85), rMax = precioC*1.15;
+    rangoTxt = fmt(rMin)+' — '+fmt(rMax);
+    document.getElementById('rango-t').textContent = rangoTxt;
+    document.getElementById('rango-m').textContent = 'Con tus números actuales puedes explorar propiedades en este rango. Recuerda que varía mucho según la zona — un asesor puede mostrarte las opciones reales disponibles para ti.';
+  } else {
+    document.getElementById('b-rango').style.display = 'none';
+    document.getElementById('b-brecha').style.display = 'block';
+    const falta = Math.max(0, PISO*.10 - ahorro);
+    const meses = libre > 0 ? Math.ceil(falta/(libre*.5)) : null;
+    rangoTxt = 'En preparación';
+    document.getElementById('brecha-v').textContent = falta > 0 ? 'Falta '+fmt(falta)+' de enganche' : 'Enganche en camino';
+    document.getElementById('brecha-m').textContent = 'Las propiedades en México parten de $1,000,000 en la mayoría de zonas. Para ese primer escalón necesitas al menos $100,000 de enganche. '+(meses ? 'Ahorrando sistemáticamente, podrías llegar en aproximadamente '+meses+' meses.' : 'El primer paso es liberar flujo mensual reduciendo deudas.');
+  }
+
+  const lEl = document.getElementById('libre-v');
+  lEl.textContent = fmt(libre);
+  lEl.className = 'rk-v '+(libre>=ingreso*.2?'g':libre>=0?'a':'r');
+
+  const eEl = document.getElementById('eng-v');
+  eEl.textContent = fmt(ahorro);
+  eEl.className = 'rk-v '+(ahorro>=PISO*.20?'g':ahorro>=PISO*.10?'a':'r');
+  document.getElementById('eng-s').textContent = ahorro>=PISO*.20?'✓ Cubre el 20%+ del precio mínimo':ahorro>=PISO*.10?'Cubre el 10% del precio mínimo':'Por debajo del 10% mínimo recomendado';
+
+  const msgEl = document.getElementById('msg-p');
+  const msgTx = document.getElementById('msg-t');
+  if (alcanza && pctD<.35) { msgEl.className='msg ok'; msgTx.textContent='¡Tu perfil financiero es favorable! Estás en posición de iniciar una búsqueda real y explorar opciones de crédito. El siguiente paso natural es ver qué opciones concretas existen en tu zona y rango.'; }
+  else if (alcanza)         { msgEl.className='msg warn'; msgTx.textContent='Tu capacidad llega al mercado, pero tu carga de deuda podría complicar la aprobación del crédito. Con ajustes pequeños en 3–6 meses tu perfil puede mejorar mucho.'; }
+  else                      { msgEl.className='msg warn'; msgTx.textContent='Con tus números actuales el mercado formal está un poco lejos, y eso está perfectamente bien. Muchas personas pasan por esta etapa. Lo más valioso ahora es tener un plan claro. ¡Aquí empieza el camino!'; }
+
+  const alertas = [];
+  if      (pctD<.30) alertas.push({t:'ok',  i:'✅',tx:'Tu carga de deuda es sana (menos del 30% de tu ingreso).'});
+  else if (pctD<.40) alertas.push({t:'warn',i:'⚠️',tx:'Tu deuda está cerca del límite. Reducirla mejorará tus posibilidades de crédito.'});
+  else               alertas.push({t:'bad', i:'🚨',tx:'Tu carga de deuda supera el 40%. Prioriza liquidar antes de solicitar hipoteca.'});
+  if      (ahorro>=PISO*.20) alertas.push({t:'ok',  i:'✅',tx:'Tu ahorro cubre más del 20% del precio mínimo. Excelente posición.'});
+  else if (ahorro>=PISO*.10) alertas.push({t:'warn',i:'⚠️',tx:'Tienes el 10% mínimo de enganche. Más ahorro = mejores condiciones.'});
+  else                       alertas.push({t:'bad', i:'🚨',tx:'Tu ahorro aún no cubre el enganche mínimo. Ese es tu primer objetivo.'});
+  if      (libre>=ingreso*.2) alertas.push({t:'ok',  i:'✅',tx:'Tienes margen mensual para imprevistos y gastos de ser propietario/a.'});
+  else if (libre>=0)          alertas.push({t:'warn',i:'⚠️',tx:'Tu margen mensual es ajustado. Considera si puedes absorber gastos inesperados.'});
+  else                        alertas.push({t:'bad', i:'🚨',tx:'Tu flujo mensual es negativo. Hay que resolver eso antes de pensar en hipoteca.'});
+  document.getElementById('alertas').innerHTML = alertas.map(a=>`<div class="ai ${a.t}"><span class="ai-ico">${a.i}</span><span>${a.tx}</span></div>`).join('');
+
+  const recs = [];
+  if (!alcanza) { recs.push('Define una meta de ahorro mensual concreta. Aunque sean '+fmt(Math.max(500,libre*.4))+' al mes, ya es un gran inicio.'); recs.push('Revisa si tienes Infonavit acumulado — puede ser parte importante de tu enganche.'); }
+  if (pctD>.30) recs.push('Liquida primero las deudas con mayor tasa de interés. Esto libera capacidad para la hipoteca.');
+  if (ahorro<PISO*.10) recs.push('Abre una cuenta exclusiva de ahorro para enganche y no la toques para otra cosa.');
+  recs.push('Consulta tu reporte en burodecredito.com.mx — gratis una vez al año y te dice cómo te ven los bancos.');
+  recs.push('Agenda una sesión con Alejandra para revisar opciones reales según tu perfil y zona.');
+  document.getElementById('recs').innerHTML = recs.map((r,i)=>`<div class="ri"><span class="rn">${i+1}</span><span>${r}</span></div>`).join('');
+
+  const perfil = alcanza && pctD<.35 ? 'Listo para comprar' : alcanza ? 'Moderado' : 'En preparación';
+  document.getElementById('cta2').innerHTML = alcanza && pctD<.35 ? `
+    <div class="cb az"><div class="cb-badge">Quiero prepararme mejor</div><h3>Asesoría personalizada 1 a 1</h3><p>Revisamos juntas tu situación y trazamos el plan exacto.</p><a class="btn-sm" href="https://wa.link/vjorgs" target="_blank">💬 Agendar asesoría</a></div>
+    <div class="cb vd"><div class="cb-badge">¡Mi perfil está listo!</div><h3>Ver propiedades en mi rango</h3><p>Tu perfil es favorable. Hay opciones esperándote.</p><a class="btn-sm" href="https://wa.link/drk023" target="_blank">🏠 Ver propiedades</a></div>` : `
+    <div class="cb az"><div class="cb-badge">Quiero un plan claro</div><h3>Asesoría personalizada 1 a 1</h3><p>Te ayudo a trazar el camino exacto para llegar a tu primera propiedad.</p><a class="btn-sm" href="https://wa.link/vjorgs" target="_blank">💬 Agendar asesoría</a></div>
+    <div class="cb vd"><div class="cb-badge">Quiero explorar opciones</div><h3>¿Qué existe en mi zona?</h3><p>A veces hay opciones que no conocías. Cuéntame dónde estás.</p><a class="btn-sm" href="https://wa.link/drk023" target="_blank">🏠 Preguntar por opciones</a></div>`;
+
+  const datosParaGuardar = {...datosU, ingreso, deudas, ahorro, mensualidad:mens, salud:sTxt, rango:rangoTxt, perfil, checklist_pct: checklistScore+'%', fecha:new Date().toLocaleString('es-MX')};
+  enviarSheets(datosParaGuardar);
+  enviarCRM(datosParaGuardar);
+
+  const res = document.getElementById('resultados');
+  res.style.display='block'; res.style.animation='none';
+  setTimeout(()=>{res.style.animation='fu .4s ease';},10);
+  setTimeout(()=>res.scrollIntoView({behavior:'smooth',block:'start'}),100);
+}
+
+// ── SHEETS (opcional, solo si algún día pegas tu URL de Apps Script)
+function mostrarToast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3500)}
+function enviarSheets(d){
+  if(SHEETS_URL==='PEGA_AQUI_TU_URL_DE_APPS_SCRIPT'){return;}
+  fetch(SHEETS_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify(d)})
+  .catch(()=>console.log('No se pudo conectar a Sheets'));
+}
+
+// ── TU CRM (Supabase, vía /api/consulta) — aquí sí queda guardado de verdad
+function enviarCRM(d){
+  const notas = [
+    'Kit financiero — ' + (d.pais || '') + (d.ciudad ? (', ' + d.ciudad) : ''),
+    d.correo ? ('Correo: ' + d.correo) : '',
+    'Perfil: ' + (d.perfil || '—') + ' · Salud financiera: ' + (d.salud || '—'),
+    'Rango estimado: ' + (d.rango || '—'),
+    'Checklist de preparación: ' + (d.checklist_pct || '0%'),
+    'Ingreso: ' + fmt(d.ingreso||0) + ' · Deudas: ' + fmt(d.deudas||0) +
+      ' · Ahorro: ' + fmt(d.ahorro||0) + ' · Mensualidad cómoda: ' + fmt(d.mensualidad||0)
+  ].filter(Boolean).join('\n');
+
+  fetch('/api/consulta', {
+    method: 'POST',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({
+      nombre: d.nombre || '',
+      telefono: d.telefono || '',
+      mensaje: notas,
+      referencia_propiedad: 'Kit financiero'
+    })
+  })
+  .then(r => r.json().then(b => ({ok:r.ok, b})))
+  .then(res => mostrarToast(res.ok ? '✅ Tus datos quedaron registrados' : '⚠️ No se pudo guardar, pero tus resultados están abajo'))
+  .catch(() => mostrarToast('⚠️ No se pudo guardar, pero tus resultados están abajo'));
+}
+</script>
+</body>
+</html>
