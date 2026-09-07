@@ -134,6 +134,19 @@
         </div>
       </div>
 
+      <div class="campo">
+        <label>Fuente — de dónde salió esta propiedad (hace falta para generar su clave interna)</label>
+        <select id="f-fuente">
+          <option value="">Selecciona una opción</option>
+          <option value="FAC">Facebook</option>
+          <option value="FBM">Facebook Marketplace</option>
+          <option value="WEB">Web general</option>
+          <option value="ALI">Aliado/asesor</option>
+          <option value="DEV">Desarrollador</option>
+          <option value="PRO">Propietario directo</option>
+        </select>
+      </div>
+
       <div class="grid3">
         <div class="campo"><label>Estado</label><input type="text" id="f-estado" placeholder="Querétaro"></div>
         <div class="campo"><label>Municipio</label><input type="text" id="f-municipio" placeholder="El Marqués"></div>
@@ -316,6 +329,7 @@
       document.getElementById("f-tipo").value = propiedad.tipo_propiedad || "";
       document.getElementById("f-operacion").value = propiedad.operacion || "venta";
       document.getElementById("f-disponibilidad").value = propiedad.disponibilidad || "DISPONIBLE";
+      document.getElementById("f-fuente").value = propiedad.fuente || "";
       document.getElementById("f-estado").value = propiedad.estado || "";
       document.getElementById("f-municipio").value = propiedad.municipio || "";
       document.getElementById("f-ciudad").value = propiedad.ciudad || "";
@@ -367,6 +381,7 @@
       tipo_propiedad: document.getElementById("f-tipo").value,
       operacion: document.getElementById("f-operacion").value,
       disponibilidad: document.getElementById("f-disponibilidad").value,
+      fuente: document.getElementById("f-fuente").value,
       estado: document.getElementById("f-estado").value,
       municipio: document.getElementById("f-municipio").value,
       ciudad: document.getElementById("f-ciudad").value,

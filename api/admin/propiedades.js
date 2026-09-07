@@ -7,7 +7,21 @@ const COLUMNAS_ADMIN =
   "id, referencia_publica, id_operativo, estado, ciudad, municipio, zona, colonia, " +
   "desarrollo, tipo_propiedad, operacion, precio_publicado, terreno_m2, construccion_m2, " +
   "recamaras, banos, estacionamientos, antiguedad, amenidades, caracteristicas_especiales, " +
-  "disponibilidad, formas_pago_aceptadas, fotos, notas, creado_en";
+  "disponibilidad, fuente, mercado_codigo, formas_pago_aceptadas, fotos, notas, creado_en";
+
+// El id_operativo/referencia_publica solo se arman solos si la propiedad ya
+// trae mercado_codigo + fuente (ver ~/raiz-profunda-curso/ids_operativos.sql).
+// El panel solo conoce el nombre del estado, así que aquí se busca el código
+// (QRO/PUE/...) correspondiente en tu catálogo — nunca se inventa uno.
+async function buscarMercadoCodigo(supabase, nombreEstado) {
+  if (!nombreEstado) return null;
+  const { data } = await supabase
+    .from("catalogo_ubicaciones")
+    .select("codigo")
+    .ilike("nombre", nombreEstado)
+    .maybeSingle();
+  return data ? data.codigo : null;
+}
 
 function autorizado(req) {
   const clave = process.env.ADMIN_PASSWORD;
@@ -56,6 +70,8 @@ module.exports = async (req, res) => {
   }
   body = body || {};
 
+  const mercadoCodigo = await buscarMercadoCodigo(supabase, body.estado);
+
   const registro = {
     estado: body.estado || null,
     ciudad: body.ciudad || null,
@@ -74,6 +90,8 @@ module.exports = async (req, res) => {
     amenidades: listaOVacio(body.amenidades),
     caracteristicas_especiales: body.caracteristicas_especiales || null,
     disponibilidad: body.disponibilidad || "DISPONIBLE",
+    fuente: body.fuente || null,
+    mercado_codigo: mercadoCodigo,
     formas_pago_aceptadas: listaOVacio(body.formas_pago_aceptadas),
     fotos: listaOVacio(body.fotos).map((u) => ({ url: u, autorizada: true, origen: "admin" })),
     notas: body.notas || null,
