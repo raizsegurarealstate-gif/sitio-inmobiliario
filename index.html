@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Alejandra García — Asesora inmobiliaria en Querétaro</title>
+<meta name="description" content="Propiedades nuevas y usadas en Querétaro: Corregidora, El Marqués, Juriquilla, Zibatá, Zakia, El Mirador y Milenio III.">
+<style>
+  :root{
+    --tinta:#14201d;
+    --papel:#f7f5f0;
+    --acento:#0f5d52;
+    --acento-suave: color-mix(in srgb, var(--acento) 9%, white);
+    --acento-borde: color-mix(in srgb, var(--acento) 26%, white);
+    --fuente-titulo:Georgia,"Iowan Old Style","Palatino Linotype","Book Antiqua",serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+    background:var(--papel); color:var(--tinta);
+    line-height:1.6; -webkit-font-smoothing:antialiased;
+  }
+  .caja{max-width:1080px;margin:0 auto;padding:0 24px}
+  .caja-angosta{max-width:640px;margin:0 auto;padding:0 24px}
+
+  header{position:relative;padding:80px 0 56px;text-align:center;overflow:hidden}
+  header::before{
+    content:"";position:absolute;top:-160px;left:50%;transform:translateX(-50%);
+    width:640px;height:460px;border-radius:50%;
+    background:radial-gradient(closest-side, var(--acento-suave), transparent);
+    z-index:0;
+  }
+  header > *{position:relative;z-index:1}
+  .chip{
+    display:inline-flex;align-items:center;gap:8px;
+    background:var(--acento-suave);border:1px solid var(--acento-borde);
+    color:var(--acento);padding:8px 18px;border-radius:999px;
+    text-transform:uppercase;letter-spacing:.14em;font-size:12.5px;font-weight:700;
+    margin-bottom:22px;
+  }
+  header h1{
+    font-family:var(--fuente-titulo);font-weight:700;
+    font-size:clamp(38px,7vw,60px);line-height:1.06;letter-spacing:-.01em;
+  }
+  header .lema{margin-top:16px;font-size:18px;opacity:.72;max-width:520px;margin-left:auto;margin-right:auto}
+  .boton{
+    display:inline-block;margin-top:30px;padding:17px 34px;border-radius:999px;
+    background:var(--acento);color:#fff;text-decoration:none;font-weight:700;font-size:16px;
+    box-shadow:0 14px 28px -10px color-mix(in srgb, var(--acento) 55%, transparent);
+    border:none;cursor:pointer;
+  }
+  .boton.secundario{
+    background:#fff;color:var(--acento);border:1px solid var(--acento-borde);
+    box-shadow:none;
+  }
+
+  .zonas{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-top:30px}
+  .zona{
+    background:#fff;border:1px solid rgba(0,0,0,.08);border-radius:999px;
+    padding:8px 16px;font-size:13.5px;font-weight:600;opacity:.8;
+  }
+
+  section{padding:12px 0 60px}
+  .titulo-seccion{
+    font-family:var(--fuente-titulo);font-size:clamp(26px,4vw,34px);
+    text-align:center;margin-bottom:8px;
+  }
+  .subtitulo-seccion{text-align:center;opacity:.65;font-size:15.5px;margin-bottom:36px}
+
+  .propiedades{display:grid;gap:20px;grid-template-columns:1fr}
+  @media(min-width:720px){.propiedades{grid-template-columns:repeat(2,1fr)}}
+  @media(min-width:1020px){.propiedades{grid-template-columns:repeat(3,1fr)}}
+
+  .prop{
+    background:#fff;border:1px solid rgba(0,0,0,.06);border-radius:18px;
+    overflow:hidden;box-shadow:0 12px 26px -18px rgba(20,32,29,.25);
+    display:flex;flex-direction:column;
+  }
+  .prop .foto{
+    height:180px;background:var(--acento-suave);display:flex;align-items:center;
+    justify-content:center;color:var(--acento);font-size:13px;font-weight:700;
+    letter-spacing:.08em;text-transform:uppercase;background-size:cover;background-position:center;
+  }
+  .prop .cuerpo{padding:22px;display:flex;flex-direction:column;gap:10px;flex:1}
+  .prop .ref{font-size:12.5px;text-transform:uppercase;letter-spacing:.1em;color:var(--acento);font-weight:700}
+  .prop h3{font-family:var(--fuente-titulo);font-size:21px;font-weight:700}
+  .prop .ubi{font-size:14px;opacity:.65}
+  .prop .precio{font-size:20px;font-weight:800;margin-top:2px}
+  .prop .datos{display:flex;gap:14px;font-size:13.5px;opacity:.75;flex-wrap:wrap}
+  .prop .boton{margin-top:auto;padding:12px 20px;font-size:14.5px;text-align:center}
+
+  .estado-lista{grid-column:1/-1;text-align:center;padding:40px 20px;opacity:.6;font-size:15px}
+
+  .modal-fondo{
+    position:fixed;inset:0;background:rgba(20,32,29,.5);display:none;
+    align-items:center;justify-content:center;padding:20px;z-index:50;
+  }
+  .modal-fondo.abierto{display:flex}
+  .modal{
+    background:#fff;border-radius:18px;max-width:440px;width:100%;padding:34px;
+    box-shadow:0 30px 60px -20px rgba(0,0,0,.35);
+  }
+  .modal h3{font-family:var(--fuente-titulo);font-size:24px;margin-bottom:6px}
+  .modal p.ref-modal{font-size:13.5px;color:var(--acento);font-weight:700;margin-bottom:20px}
+  .campo{margin-bottom:14px}
+  .campo label{display:block;font-size:13px;font-weight:700;margin-bottom:6px}
+  .campo input, .campo textarea{
+    width:100%;padding:12px 14px;border-radius:10px;border:1px solid rgba(0,0,0,.15);
+    font:inherit;font-size:15px;
+  }
+  .campo textarea{resize:vertical;min-height:80px}
+  .modal .fila-botones{display:flex;gap:10px;margin-top:20px}
+  .modal .fila-botones .boton{flex:1;margin-top:0}
+  .mensaje-envio{font-size:14px;margin-top:14px;padding:12px 14px;border-radius:10px}
+  .mensaje-envio.ok{background:#e7f5ee;color:#0f5d3f}
+  .mensaje-envio.error{background:#fdeaea;color:#9c2b2b}
+
+  footer{border-top:1px solid rgba(0,0,0,.08);padding:36px 0;text-align:center;font-size:13.5px;opacity:.6}
+</style>
+</head>
+<body>
+
+  <header class="caja">
+    <p class="chip">📍 Querétaro</p>
+    <h1>Alejandra García</h1>
+    <p class="lema">Asesora inmobiliaria — propiedades nuevas y usadas, para vivir o invertir.</p>
+    <a class="boton" href="https://wa.me/524424850838?text=Hola%2C%20quiero%20informaci%C3%B3n%20sobre%20una%20propiedad" target="_blank" rel="noopener">Escríbeme por WhatsApp</a>
+    <div class="zonas">
+      <span class="zona">Corregidora</span>
+      <span class="zona">El Marqués</span>
+      <span class="zona">Juriquilla</span>
+      <span class="zona">Zibatá</span>
+      <span class="zona">Zakia</span>
+      <span class="zona">El Mirador</span>
+      <span class="zona">Milenio III</span>
+      <span class="zona">Puebla</span>
+    </div>
+  </header>
+
+  <section class="caja">
+    <h2 class="titulo-seccion">Propiedades disponibles</h2>
+    <p class="subtitulo-seccion">Inventario real, actualizado directo desde mi sistema.</p>
+    <div id="lista-propiedades" class="propiedades">
+      <p class="estado-lista">Cargando propiedades disponibles…</p>
+    </div>
+  </section>
+
+  <div class="modal-fondo" id="fondo-modal">
+    <div class="modal">
+      <h3>Me interesa</h3>
+      <p class="ref-modal" id="ref-modal-texto"></p>
+      <form id="form-consulta">
+        <input type="hidden" id="campo-referencia" name="referencia_propiedad">
+        <div class="campo">
+          <label for="campo-nombre">Tu nombre</label>
+          <input type="text" id="campo-nombre" name="nombre" autocomplete="name">
+        </div>
+        <div class="campo">
+          <label for="campo-telefono">Tu teléfono (10 dígitos)</label>
+          <input type="tel" id="campo-telefono" name="telefono" required autocomplete="tel" inputmode="numeric">
+        </div>
+        <div class="campo">
+          <label for="campo-mensaje">¿Qué buscas o qué te gustaría saber?</label>
+          <textarea id="campo-mensaje" name="mensaje"></textarea>
+        </div>
+        <div class="fila-botones">
+          <button type="button" class="boton secundario" id="boton-cerrar">Cancelar</button>
+          <button type="submit" class="boton" id="boton-enviar">Enviar</button>
+        </div>
+        <div id="mensaje-envio"></div>
+      </form>
+    </div>
+  </div>
+
+  <footer>
+    Alejandra García · Asesora inmobiliaria en Querétaro · WhatsApp 442 485 0838
+  </footer>
+
+<script>
+(function () {
+  "use strict";
+
+  var formatoPrecio = new Intl.NumberFormat("es-MX", {
+    style: "currency", currency: "MXN", maximumFractionDigits: 0
+  });
+
+  function textoCorto(t, max) {
+    if (!t) return "";
+    return t.length > max ? t.slice(0, max - 1) + "…" : t;
+  }
+
+  function tarjeta(p) {
+    var ubicacion = [p.colonia, p.zona || p.municipio || p.ciudad].filter(Boolean).join(", ");
+    var precio = p.precio_publicado ? formatoPrecio.format(p.precio_publicado) : "Precio a consultar";
+    var datos = [];
+    if (p.recamaras) datos.push(p.recamaras + " rec.");
+    if (p.banos) datos.push(p.banos + " baños");
+    if (p.estacionamientos) datos.push(p.estacionamientos + " autos");
+    if (p.construccion_m2) datos.push(p.construccion_m2 + " m² const.");
+
+    var fotoStyle = (p.fotos && p.fotos[0])
+      ? ' style="background-image:url(\'' + p.fotos[0].replace(/'/g, "%27") + '\')"'
+      : "";
+    var fotoTexto = (p.fotos && p.fotos[0]) ? "" : (p.tipo_propiedad || "Propiedad");
+
+    var div = document.createElement("div");
+    div.className = "prop";
+    div.innerHTML =
+      '<div class="foto"' + fotoStyle + '>' + fotoTexto + '</div>' +
+      '<div class="cuerpo">' +
+      '<p class="ref">' + (p.referencia_publica || "") + " · " + (p.operacion || "") + '</p>' +
+      "<h3>" + (p.tipo_propiedad || "Propiedad") + "</h3>" +
+      '<p class="ubi">' + (ubicacion || "Querétaro") + "</p>" +
+      '<p class="precio">' + precio + "</p>" +
+      '<p class="datos">' + datos.map(function (d) { return "<span>" + d + "</span>"; }).join("") + "</p>" +
+      (p.caracteristicas_especiales ? '<p class="ubi">' + textoCorto(p.caracteristicas_especiales, 90) + "</p>" : "") +
+      '<button class="boton" data-ref="' + (p.referencia_publica || "") + '">Me interesa</button>' +
+      "</div>";
+    return div;
+  }
+
+  function cargarPropiedades() {
+    var contenedor = document.getElementById("lista-propiedades");
+    fetch("/api/propiedades")
+      .then(function (r) { return r.json(); })
+      .then(function (lista) {
+        contenedor.innerHTML = "";
+        if (!Array.isArray(lista) || lista.length === 0) {
+          contenedor.innerHTML = '<p class="estado-lista">Por ahora no tengo propiedades públicas cargadas aquí — escríbeme por WhatsApp y te ayudo a encontrar la tuya.</p>';
+          return;
+        }
+        lista.forEach(function (p) { contenedor.appendChild(tarjeta(p)); });
+      })
+      .catch(function () {
+        contenedor.innerHTML = '<p class="estado-lista">No pude cargar las propiedades ahorita. Escríbeme por WhatsApp mientras tanto.</p>';
+      });
+  }
+
+  var fondoModal = document.getElementById("fondo-modal");
+  var refModalTexto = document.getElementById("ref-modal-texto");
+  var campoReferencia = document.getElementById("campo-referencia");
+  var formConsulta = document.getElementById("form-consulta");
+  var mensajeEnvio = document.getElementById("mensaje-envio");
+  var botonEnviar = document.getElementById("boton-enviar");
+
+  function abrirModal(referencia) {
+    campoReferencia.value = referencia || "";
+    refModalTexto.textContent = referencia ? "Sobre " + referencia : "Cuéntame qué buscas";
+    mensajeEnvio.textContent = "";
+    mensajeEnvio.className = "mensaje-envio";
+    formConsulta.reset();
+    campoReferencia.value = referencia || "";
+    fondoModal.classList.add("abierto");
+  }
+  function cerrarModal() { fondoModal.classList.remove("abierto"); }
+
+  document.getElementById("lista-propiedades").addEventListener("click", function (e) {
+    if (e.target.matches("button[data-ref]")) abrirModal(e.target.getAttribute("data-ref"));
+  });
+  document.getElementById("boton-cerrar").addEventListener("click", cerrarModal);
+  fondoModal.addEventListener("click", function (e) { if (e.target === fondoModal) cerrarModal(); });
+
+  formConsulta.addEventListener("submit", function (e) {
+    e.preventDefault();
+    var telefono = document.getElementById("campo-telefono").value.replace(/\D/g, "");
+    if (telefono.length !== 10) {
+      mensajeEnvio.textContent = "Necesito un teléfono de 10 dígitos para poder escribirte.";
+      mensajeEnvio.className = "mensaje-envio error";
+      return;
+    }
+    botonEnviar.disabled = true;
+    botonEnviar.textContent = "Enviando…";
+    fetch("/api/consulta", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        nombre: document.getElementById("campo-nombre").value,
+        telefono: telefono,
+        mensaje: document.getElementById("campo-mensaje").value,
+        referencia_propiedad: campoReferencia.value
+      })
+    })
+      .then(function (r) { return r.json().then(function (d) { return { ok: r.ok, d: d }; }); })
+      .then(function (res) {
+        botonEnviar.disabled = false;
+        botonEnviar.textContent = "Enviar";
+        if (!res.ok) {
+          mensajeEnvio.textContent = (res.d && res.d.error) || "No se pudo enviar, intenta otra vez.";
+          mensajeEnvio.className = "mensaje-envio error";
+          return;
+        }
+        mensajeEnvio.textContent = "¡Listo! Ya quedó registrada tu consulta. Te contacto pronto.";
+        mensajeEnvio.className = "mensaje-envio ok";
+        setTimeout(cerrarModal, 1800);
+      })
+      .catch(function () {
+        botonEnviar.disabled = false;
+        botonEnviar.textContent = "Enviar";
+        mensajeEnvio.textContent = "No se pudo enviar, intenta otra vez.";
+        mensajeEnvio.className = "mensaje-envio error";
+      });
+  });
+
+  cargarPropiedades();
+})();
+</script>
+
+<!-- Fase 2 (pendiente): asistente de chat conversacional, cuando Alejandra tenga
+     su llave de IA. Va aquí, como una pieza más, sin tocar lo de arriba. -->
+
+</body>
+</html>
