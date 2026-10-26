@@ -54,6 +54,8 @@ main{max-width:680px;margin:0 auto;padding:24px 24px 56px}
 .ff input:focus,.ff select:focus{border-color:var(--verde-claro);box-shadow:0 0 0 3px rgba(82,183,136,.12);background:var(--blanco)}
 .ff.full{grid-column:1/-1}
 .privacidad{font-size:11px;color:var(--muy-suave);margin-bottom:14px;line-height:1.5}
+.aviso-check{display:flex;gap:8px;align-items:flex-start;font-size:13px;line-height:1.45;margin-bottom:14px;cursor:pointer}
+.aviso-check input{margin-top:3px;flex:none}
 
 /* NOTA ZONAS */
 .nz{background:var(--blanco);border:1px solid var(--borde);border-radius:var(--r);padding:13px 15px;margin-bottom:18px;display:flex;gap:10px;align-items:flex-start}
@@ -274,6 +276,7 @@ main{max-width:680px;margin:0 auto;padding:24px 24px 56px}
         </div>
       </div>
       <div class="privacidad">🔒 Tu información es privada y solo será usada por Alejandra García - Raíz Segura Real Estate para orientarte de forma personalizada.</div>
+      <label class="aviso-check"><input type="checkbox" id="f-aviso"> <span>Acepto el <a href="/aviso-de-privacidad/" target="_blank" rel="noopener">aviso de privacidad</a>, incluido el uso de los datos financieros que capture en la calculadora (ingresos, deudas y ahorro) para orientarme. *</span></label>
       <button class="btn mb18" onclick="validarForm()"><span>Continuar a la calculadora</span><span>→</span></button>
     </div>
   </div>
@@ -595,7 +598,8 @@ function validarForm() {
   if (!e || !e.includes('@')) { alert('Por favor ingresa un correo válido.'); document.getElementById('f-correo').focus(); return; }
   if (!p) { alert('Por favor selecciona tu país.'); document.getElementById('f-pais').focus(); return; }
   if (!c) { alert('Por favor ingresa tu ciudad.'); document.getElementById('f-ciudad').focus(); return; }
-  datosU = {nombre:n, telefono:t, correo:e, pais:p, ciudad:c};
+  if (!document.getElementById('f-aviso').checked) { alert('Para continuar, acepta el aviso de privacidad.'); document.getElementById('f-aviso').focus(); return; }
+  datosU = {nombre:n, telefono:t, correo:e, pais:p, ciudad:c, aviso:true};
   document.getElementById('bloque-form').style.display = 'none';
   document.getElementById('bloque-calc').style.display = 'block';
   window.scrollTo({top:0,behavior:'smooth'});
@@ -764,6 +768,8 @@ function enviarCRM(d){
     body: JSON.stringify({
       nombre: d.nombre || '',
       telefono: d.telefono || '',
+      correo: d.correo || '',
+      aviso_aceptado: d.aviso === true,
       mensaje: notas,
       referencia_propiedad: 'Kit financiero'
     })
