@@ -61,6 +61,35 @@
   #mensaje-form{font-size:13.5px;margin-top:12px;padding:10px 12px;border-radius:8px;display:none}
   #mensaje-form.error{background:#fdeaea;color:#9c2b2b;display:block}
   #mensaje-form.ok{background:#e7f5ee;color:#0f5d3f;display:block}
+  .caja{max-width:1180px}
+  .tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:18px;border-bottom:1px solid var(--borde)}
+  .tab{background:none;border:0;padding:10px 16px;font:inherit;font-weight:600;cursor:pointer;color:var(--tinta);opacity:.6;border-bottom:3px solid transparent}
+  .tab.activa{opacity:1;border-bottom-color:var(--acento)}
+  .vista{display:none}
+  .filtros-crm{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:14px}
+  .filtros-crm input,.filtros-crm select{padding:9px 11px;border-radius:8px;border:1px solid var(--borde);font:inherit;font-size:14px;background:#fff}
+  .crm-scroll{overflow-x:auto}
+  .crm-tabla td.vacio{text-align:center;opacity:.6;padding:24px}
+  .crm-tabla tr.clicable{cursor:pointer}
+  .crm-tabla tr.clicable:hover td{background:var(--acento-suave)}
+  .tarjetas{display:flex;gap:10px;flex-wrap:wrap;margin:12px 0 16px}
+  .tarjeta{background:#fff;border:1px solid var(--borde);border-radius:10px;padding:12px 16px;min-width:140px}
+  .tarjeta .tv{font-size:20px;font-weight:700}
+  .tarjeta .tt{font-size:12px;opacity:.65}
+  .crm-aviso{display:none;padding:10px 14px;border-radius:8px;margin-bottom:12px;font-size:14px}
+  .crm-aviso.ok{background:#e7f5ee;color:#0f5d3f}
+  .crm-aviso.error{background:#fdeaea;color:#9c2b2b}
+  #crm-modal{position:fixed;inset:0;background:rgba(20,32,29,.5);display:none;align-items:flex-start;justify-content:center;padding:30px 16px;overflow-y:auto;z-index:70}
+  #crm-modal.abierto{display:flex}
+  #crm-modal-panel{background:#fff;border-radius:14px;max-width:720px;width:100%;padding:24px;margin-bottom:40px}
+  #crm-modal-panel h2{font-size:19px;margin-bottom:14px}
+  #crm-modal-cerrar{float:right;background:none;border:0;font-size:24px;cursor:pointer}
+  .dato{font-size:13.5px;margin-bottom:8px}
+  .calculo{background:var(--acento-suave);padding:10px 12px;border-radius:8px;font-weight:600}
+  .calculo.error{background:#fdeaea;color:#9c2b2b}
+  #rep-acciones{display:none;gap:10px;margin:0 0 14px}
+  @media print{.tabs,.filtros-crm,#rep-acciones,.barra-superior,#crm-aviso,#vista-propiedades,#vista-clientes,#vista-citas,#vista-ventas{display:none!important}
+    #vista-reportes{display:block!important}body{background:#fff}.caja{max-width:none}}
 </style>
 </head>
 <body>
@@ -74,6 +103,59 @@
 
 <div id="app">
   <div class="caja">
+    <nav class="tabs">
+      <button class="tab activa" id="tab-propiedades" type="button">Propiedades</button>
+      <button class="tab" id="tab-clientes" type="button">Clientes</button>
+      <button class="tab" id="tab-citas" type="button">Citas</button>
+      <button class="tab" id="tab-ventas" type="button">Ventas</button>
+      <button class="tab" id="tab-reportes" type="button">Reportes</button>
+    </nav>
+    <div id="crm-aviso" class="crm-aviso"></div>
+
+    <section id="vista-clientes" class="vista">
+      <h1>Clientes</h1>
+      <p class="sub">Todos los que te escribieron desde el sitio, con su interés, propiedad, forma de pago y plazo. Toca un cliente para ver su ficha.</p>
+      <div class="filtros-crm">
+        <input id="cli-buscar" type="search" placeholder="Buscar nombre, teléfono, correo, clave…">
+        <select id="cli-tipo"><option value="">Todos los intereses</option><option value="comprar">Comprar</option><option value="construir">Construir</option><option value="invertir">Invertir</option></select>
+        <select id="cli-etapa"></select>
+        <span id="cli-total" class="sub" style="margin:0"></span>
+      </div>
+      <div id="cli-lista"></div>
+    </section>
+
+    <section id="vista-citas" class="vista">
+      <h1>Citas</h1>
+      <p class="sub">Seguimiento de visitas: agendada, confirmada, realizada o cancelada. Toca una cita para cambiar su estado o anotar qué pasó.</p>
+      <div class="filtros-crm">
+        <select id="cit-estado"><option value="">Todos los estados</option><option value="agendada">Agendada</option><option value="confirmada">Confirmada</option><option value="realizada">Realizada</option><option value="cancelada">Cancelada</option></select>
+        <button class="btn" id="cit-nueva" type="button">+ Nueva cita</button>
+      </div>
+      <div id="cit-lista"></div>
+    </section>
+
+    <section id="vista-ventas" class="vista">
+      <h1>Ventas y comisiones</h1>
+      <p class="sub">Registra si la venta fue directa o en colaboración, y cómo se reparte la comisión.</p>
+      <div class="filtros-crm"><button class="btn" id="ven-nueva" type="button">+ Registrar venta</button></div>
+      <div id="ven-tarjetas" class="tarjetas"></div>
+      <div id="ven-lista"></div>
+    </section>
+
+    <section id="vista-reportes" class="vista">
+      <h1>Reportes</h1>
+      <p class="sub">Elige el reporte y el periodo. Puedes descargarlo para Excel (CSV) o imprimirlo / guardarlo como PDF.</p>
+      <div class="filtros-crm">
+        <select id="rep-tipo"><option value="clientes">Clientes</option><option value="citas">Citas</option><option value="ventas">Ventas y comisiones</option><option value="embudo">Embudo por etapa</option></select>
+        <label>Desde <input id="rep-desde" type="date"></label>
+        <label>Hasta <input id="rep-hasta" type="date"></label>
+        <button class="btn" id="rep-generar" type="button">Ver reporte</button>
+      </div>
+      <div id="rep-acciones"><button class="btn secundario" id="rep-csv" type="button">Descargar CSV (Excel)</button><button class="btn secundario" id="rep-imprimir" type="button">Imprimir / guardar PDF</button></div>
+      <div id="rep-salida"></div>
+    </section>
+
+    <section id="vista-propiedades" class="vista" style="display:block">
     <h1>Tus propiedades</h1>
     <p class="sub">Lo que marques "Disponible" aparece en el sitio público. Lo demás solo lo ves tú aquí.</p>
 
@@ -91,8 +173,11 @@
       <tbody id="cuerpo-tabla"></tbody>
     </table>
     <div id="tabla-vacia" style="display:none">Todavía no tienes propiedades cargadas. Dale a "Agregar propiedad" para la primera.</div>
+    </section>
   </div>
 </div>
+
+<div id="crm-modal"><div id="crm-modal-panel"><button id="crm-modal-cerrar" type="button" aria-label="Cerrar">×</button><h2 id="crm-modal-titulo"></h2><div id="crm-modal-cuerpo"></div></div></div>
 
 <div id="fondo-form">
   <div id="panel-form">
@@ -207,6 +292,8 @@
   </div>
 </div>
 
+<script src="/lib/reportes.js"></script>
+<script src="/admin/crm.js"></script>
 <script>
 (function () {
   "use strict";
@@ -261,6 +348,7 @@
     document.getElementById("pantalla-login").style.display = "none";
     document.getElementById("app").style.display = "block";
     renderizarTabla();
+    if (window.crmIniciar) window.crmIniciar(function () { return claveGuardada; });
   }
 
   // ── TABLA ──

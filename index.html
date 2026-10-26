@@ -225,6 +225,18 @@
     </div>
   </section>
 
+  <aside class="banner-chat" aria-label="Más opciones">
+    <h2>¿Lo que viste no se ajusta a lo que buscas?</h2>
+    <p>Cuéntale a nuestro asistente qué necesitas: comprar, construir una casa a tu medida o conocer opciones para tu capital.</p>
+    <div class="opciones">
+      <button type="button" data-chat="comprar">Quiero comprar</button>
+      <button type="button" data-chat="construir">Construir mi casa a mi medida</button>
+      <button type="button" data-chat="invertir">Tengo capital para invertir</button>
+      <button type="button" data-chat="cita">Agendar una visita</button>
+      <button type="button" class="claro" data-chat="preguntar">Hacer una pregunta</button>
+    </div>
+  </aside>
+
   <div class="modal-fondo" id="fondo-modal">
     <div class="modal">
       <h3>Me interesa</h3>
@@ -254,6 +266,21 @@
           <label for="campo-forma-pago-otro">¿Cuál?</label>
           <input type="text" id="campo-forma-pago-otro" placeholder="Escribe cómo">
         </div>
+        <div class="campo">
+          <label for="campo-correo">Tu correo (opcional)</label>
+          <input type="email" id="campo-correo" name="correo" autocomplete="email">
+        </div>
+        <div class="campo">
+          <label for="campo-plazo">¿En qué plazo quieres comprar?</label>
+          <select id="campo-plazo" name="plazo">
+            <option value="">Selecciona una opción</option>
+            <option>Lo antes posible</option>
+            <option>En 1 a 3 meses</option>
+            <option>En 3 a 6 meses</option>
+            <option>En más de 6 meses</option>
+            <option>Solo estoy explorando</option>
+          </select>
+        </div>
         <div class="campo campo-doble">
           <div>
             <label for="campo-fecha">Fecha para la cita</label>
@@ -268,6 +295,9 @@
           <label for="campo-mensaje">¿Algo más que quieras contarme?</label>
           <textarea id="campo-mensaje" name="mensaje"></textarea>
         </div>
+        <div class="campo">
+          <label style="display:flex;gap:8px;align-items:flex-start;font-size:13.5px"><input type="checkbox" id="campo-aviso" required style="margin-top:3px"><span>Acepto el <a href="/aviso-de-privacidad/" target="_blank" rel="noopener">aviso de privacidad</a>.</span></label>
+        </div>
         <div class="fila-botones">
           <button type="button" class="boton secundario" id="boton-cerrar">Cancelar</button>
           <button type="submit" class="boton" id="boton-enviar">Continuar por WhatsApp</button>
@@ -278,7 +308,7 @@
   </div>
 
   <footer>
-    Raíz Segura Real Estate · Alejandra García · WhatsApp 442 485 0838
+    Raíz Segura Real Estate · Alejandra García · WhatsApp 442 485 0838 · <a href="/aviso-de-privacidad/">Aviso de privacidad</a>
   </footer>
 
 <script>
@@ -552,7 +582,11 @@
         referencia_propiedad: referencia,
         forma_pago: formaPago,
         fecha_cita: fecha,
-        hora_cita: hora
+        hora_cita: hora,
+        correo: document.getElementById("campo-correo").value.trim(),
+        plazo: document.getElementById("campo-plazo").value,
+        tipo_operacion: "comprar",
+        aviso_aceptado: document.getElementById("campo-aviso").checked
       })
     }).catch(function () {});
 
@@ -593,6 +627,227 @@
 
 <!-- Fase 2 (pendiente): asistente de chat conversacional, cuando Alejandra tenga
      su llave de IA. Va aquí, como una pieza más, sin tocar lo de arriba. -->
+
+<!-- Chat del sitio: asistente de Raíz Segura. Chat libre (/api/chat), perfilador guiado (comprar / construir / invertir),
+     solicitud de visita y datos de contacto. Todo lo que guarda pasa por /api/consulta y exige aceptar el aviso de privacidad. -->
+<style>
+  #chat-boton{position:fixed;right:16px;bottom:16px;z-index:50;background:var(--tinta);color:#fff;border:0;border-radius:999px;padding:14px 20px;font:inherit;font-weight:600;cursor:pointer;box-shadow:0 6px 20px rgba(19,32,56,.3)}
+  #chat-caja{position:fixed;right:16px;bottom:16px;z-index:60;width:min(380px,calc(100vw - 32px));height:min(560px,calc(100vh - 32px));background:#fff;border:1px solid var(--acento-borde);border-radius:16px;box-shadow:0 12px 40px rgba(19,32,56,.35);display:none;flex-direction:column;overflow:hidden}
+  #chat-caja.abierto{display:flex}
+  #chat-cab{background:var(--tinta);color:#fff;padding:12px 16px;display:flex;justify-content:space-between;align-items:center;font-weight:600}
+  #chat-cab button{background:none;border:0;color:#fff;font-size:22px;cursor:pointer;line-height:1}
+  #chat-cab .der{display:flex;align-items:center}
+  #chat-cab #chat-agendar{background:var(--acento);border-radius:10px;padding:6px 10px;font-size:13px;margin-right:8px;line-height:1.2}
+  #chat-msgs{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:10px;background:var(--papel)}
+  .chat-m{max-width:85%;padding:10px 14px;border-radius:14px;line-height:1.4;font-size:15px;white-space:pre-wrap}
+  .chat-m.yo{align-self:flex-end;background:var(--tinta);color:#fff;border-bottom-right-radius:4px}
+  .chat-m.asi{align-self:flex-start;background:#fff;border:1px solid var(--acento-borde);border-bottom-left-radius:4px}
+  .area{display:none;padding:10px;border-top:1px solid var(--acento-borde);background:#fff;max-height:52%;overflow-y:auto}
+  #chat-form{display:flex;gap:8px}
+  #chat-opciones{flex-wrap:wrap;gap:8px}
+  #chat-entrada{gap:8px}
+  #chat-datos,#chat-cita{flex-direction:column;gap:8px}
+  .area input[type=text],.area input[type=tel],.area input[type=email],.area input[type=date],.area input[type=time],.area select{border:1px solid var(--acento-borde);border-radius:10px;padding:9px;font:inherit;font-size:14px;min-width:0;width:100%;box-sizing:border-box}
+  #chat-form input{flex:1;border:1px solid var(--acento-borde);border-radius:10px;padding:10px;font:inherit;min-width:0}
+  .area label{font-size:13px;display:flex;flex-direction:column;gap:2px}
+  .area label.aviso{flex-direction:row;align-items:flex-start;gap:8px;font-size:12.5px}
+  .area label.aviso input{margin-top:3px}
+  .area small{color:#5b6475;font-size:12px}
+  .area button,#chat-form button{background:var(--acento);color:#fff;border:0;border-radius:10px;padding:10px 16px;font:inherit;font-weight:600;cursor:pointer}
+  .area button.chip{background:#fff;color:var(--tinta);border:1.5px solid var(--acento);border-radius:999px;padding:8px 14px;font-weight:500;font-size:14px}
+  .area button.suave{background:transparent;color:#5b6475;font-weight:500;text-decoration:underline;padding:6px}
+</style>
+<button id="chat-boton" type="button" aria-label="Abrir chat">¿Dudas? Escríbenos</button>
+<div id="chat-caja" role="dialog" aria-label="Chat con el asistente de Raíz Segura">
+  <div id="chat-cab"><span>Asistente de Raíz Segura</span><span class="der"><button id="chat-agendar" type="button">Agendar visita</button><button id="chat-cerrar" type="button" aria-label="Cerrar">×</button></span></div>
+  <div id="chat-msgs"></div>
+  <div id="chat-opciones" class="area"></div>
+  <form id="chat-entrada" class="area"><input id="entrada-texto" type="text" maxlength="120" autocomplete="off"><button type="submit">Siguiente</button><button type="button" class="suave" id="entrada-omitir">Omitir</button></form>
+  <form id="chat-datos" class="area"><input id="datos-nombre" type="text" placeholder="Su nombre" maxlength="100" autocomplete="name"><input id="datos-tel" type="tel" placeholder="Teléfono (10 dígitos)" inputmode="numeric" maxlength="14" autocomplete="tel" required><input id="datos-correo" type="email" placeholder="Correo (opcional)" maxlength="150" autocomplete="email"><label class="aviso"><input id="datos-aviso" type="checkbox" required><span>Acepto el <a href="/aviso-de-privacidad/" target="_blank" rel="noopener">aviso de privacidad</a>.</span></label><button type="submit">Que Ale me escriba</button></form>
+  <form id="chat-cita" class="area"><label>Propiedad<select id="cita-prop"><option value="">Aún no sé cuál</option></select></label><label>Día<input id="cita-fecha" type="date" required></label><label>Hora<input id="cita-hora" type="time" required></label><input id="cita-nombre" type="text" placeholder="Su nombre" maxlength="100" autocomplete="name"><input id="cita-tel" type="tel" placeholder="Teléfono (10 dígitos)" inputmode="numeric" maxlength="14" autocomplete="tel" required><label class="aviso"><input id="cita-aviso" type="checkbox" required><span>Acepto el <a href="/aviso-de-privacidad/" target="_blank" rel="noopener">aviso de privacidad</a>.</span></label><button type="submit">Pedir esta visita</button><small>Ale le confirma el día y la hora por teléfono o WhatsApp.</small></form>
+  <form id="chat-form" class="area"><input id="chat-texto" placeholder="Escriba su pregunta…" maxlength="500" autocomplete="off"><button type="submit">Enviar</button></form>
+</div>
+<script>
+(function () {
+  "use strict";
+  var $ = function (id) { return document.getElementById(id); };
+  var caja = $("chat-caja"), boton = $("chat-boton"), msgs = $("chat-msgs");
+  var AREAS = ["chat-opciones", "chat-entrada", "chat-datos", "chat-cita", "chat-form"];
+  var historial = [], ultimaPregunta = "", ocupado = false, saludo = false, propsCargadas = false;
+  var flujo = null, paso = 0, respuestas = {}, etiquetas = {};
+
+  var FLUJOS = {
+    comprar: {
+      intro: "Con gusto le ayudo a encontrar una propiedad. Son unas preguntas rápidas; puede omitir las que no sepa.",
+      pasos: [
+        { k: "tipo_propiedad", q: "¿Qué tipo de propiedad busca?", op: ["Casa", "Departamento", "Terreno", "Local", "Bodega", "Aún no lo sé"] },
+        { k: "zona", q: "¿En qué zona o municipio le gustaría?", txt: true, ph: "Ej. El Marqués, Corregidora" },
+        { k: "presupuesto_max", q: "¿Cuál es su presupuesto máximo aproximado?", txt: true, ph: "Ej. 2,500,000" },
+        { k: "forma_pago", q: "¿Cómo piensa pagarla?", op: ["Infonavit", "Fovissste", "Crédito bancario", "Recursos propios", "Aún no lo sé"] },
+        { k: "plazo", q: "¿En qué plazo quiere comprar?", op: ["Lo antes posible", "En 1 a 3 meses", "En 3 a 6 meses", "En más de 6 meses", "Solo estoy explorando"] },
+        { k: "recamaras", q: "¿Cuántas recámaras necesita?", op: ["1", "2", "3", "4 o más"] }
+      ]
+    },
+    construir: {
+      intro: "¿Tiene terreno y quiere construir, o lo que vio no se ajusta a su presupuesto? Le ayudamos a construir una casa a su medida. Unas preguntas rápidas para conocer su proyecto:",
+      pasos: [
+        { k: "tiene_terreno", q: "¿Ya cuenta con terreno?", op: ["Sí, ya tengo terreno", "No, todavía no"] },
+        { k: "zona", q: "¿Dónde está el terreno, o en qué zona le gustaría construir?", txt: true, ph: "Ej. Corregidora, Querétaro" },
+        { k: "terreno_m2", q: "¿De qué tamaño es el terreno, aproximadamente? (m²)", txt: true, ph: "Ej. 120" },
+        { k: "recamaras", q: "¿Cuántas recámaras quiere en su casa?", op: ["1", "2", "3", "4 o más"] },
+        { k: "presupuesto_max", q: "¿Con cuánto cuenta para construir, aproximadamente?", txt: true, ph: "Ej. 1,800,000" },
+        { k: "forma_pago", q: "¿Cómo piensa financiarlo?", op: ["Recursos propios", "Crédito para construir", "Infonavit o Fovissste", "Aún no lo sé"] },
+        { k: "plazo", q: "¿Cuándo le gustaría empezar?", op: ["Lo antes posible", "En 1 a 3 meses", "En 3 a 6 meses", "En más de 6 meses", "Solo estoy explorando"] }
+      ]
+    },
+    invertir: {
+      intro: "¿Tiene capital y quiere conocer opciones en el sector inmobiliario? Cuénteme su situación y Ale le explica las opciones disponibles. Aquí no se promete ningún rendimiento.",
+      pasos: [
+        { k: "capital_disponible", q: "¿Con cuánto capital cuenta, aproximadamente?", op: ["Menos de $500,000", "$500,000 a $1 millón", "$1 a $3 millones", "Más de $3 millones"] },
+        { k: "objetivo", q: "¿Qué busca con su capital?", op: ["Generar ingresos", "Que mi dinero crezca", "Comprar una propiedad", "Aún no lo sé"] },
+        { k: "plazo", q: "¿A qué plazo piensa mantenerlo invertido?", op: ["Menos de 1 año", "1 a 3 años", "Más de 3 años", "Aún no lo sé"] },
+        { k: "experiencia", q: "¿Ha invertido antes en propiedades?", op: ["Sí", "No"] }
+      ]
+    }
+  };
+
+  function agrega(rol, t) {
+    var d = document.createElement("div");
+    d.className = "chat-m " + (rol === "yo" ? "yo" : "asi");
+    d.textContent = t;
+    msgs.appendChild(d); msgs.scrollTop = msgs.scrollHeight;
+    return d;
+  }
+  function muestra(id) {
+    AREAS.forEach(function (a) { $(a).style.display = a === id ? (a === "chat-opciones" || a === "chat-form" || a === "chat-entrada" ? "flex" : "flex") : "none"; });
+    if (id === "chat-form") $("chat-texto").focus();
+  }
+  function abre() {
+    caja.classList.add("abierto"); boton.style.display = "none";
+    if (!saludo) { saludo = true; agrega("asi", "Hola, soy el asistente de Raíz Segura. Le ayudo con información de las propiedades; si algo no lo sé, se lo paso a Ale."); muestra("chat-form"); }
+  }
+  boton.addEventListener("click", abre);
+  $("chat-cerrar").addEventListener("click", function () { caja.classList.remove("abierto"); boton.style.display = ""; });
+
+  // ---------- perfilador guiado ----------
+  function inicia(modo) {
+    abre(); flujo = modo; paso = 0; respuestas = {}; etiquetas = {};
+    agrega("asi", FLUJOS[modo].intro);
+    pregunta();
+  }
+  function pregunta() {
+    var p = FLUJOS[flujo].pasos[paso];
+    agrega("asi", p.q);
+    var o = $("chat-opciones"); o.textContent = "";
+    if (p.op) {
+      p.op.forEach(function (t) {
+        var b = document.createElement("button"); b.type = "button"; b.className = "chip"; b.textContent = t;
+        b.addEventListener("click", function () { responde(t); });
+        o.appendChild(b);
+      });
+      var s = document.createElement("button"); s.type = "button"; s.className = "suave"; s.textContent = "Omitir";
+      s.addEventListener("click", function () { responde(null); });
+      o.appendChild(s);
+      muestra("chat-opciones");
+    } else {
+      $("entrada-texto").value = ""; $("entrada-texto").placeholder = p.ph || "";
+      muestra("chat-entrada"); $("entrada-texto").focus();
+    }
+  }
+  function responde(valor) {
+    var p = FLUJOS[flujo].pasos[paso];
+    if (valor) { respuestas[p.k] = valor; etiquetas[p.k] = p.q; agrega("yo", valor); } else { agrega("yo", "Omitir"); }
+    paso++;
+    if (paso < FLUJOS[flujo].pasos.length) pregunta();
+    else { agrega("asi", "Gracias. Para que Ale le escriba con opciones, déjeme sus datos."); muestra("chat-datos"); $("datos-nombre").focus(); }
+  }
+  $("chat-entrada").addEventListener("submit", function (e) { e.preventDefault(); var v = $("entrada-texto").value.trim(); responde(v || null); });
+  $("entrada-omitir").addEventListener("click", function () { responde(null); });
+
+  // ---------- guardar datos de contacto (con perfil si viene del perfilador) ----------
+  $("chat-datos").addEventListener("submit", function (e) {
+    e.preventDefault();
+    var tel = $("datos-tel").value.replace(/\D/g, "");
+    if (tel.length !== 10) { agrega("asi", "Necesito un teléfono de 10 dígitos para que Ale le escriba."); return; }
+    var resumen = flujo ? Object.keys(respuestas).map(function (k) { return etiquetas[k] + " " + respuestas[k]; }).join(" · ") : ("Pregunta: " + ultimaPregunta);
+    var cuerpo = { nombre: $("datos-nombre").value, telefono: tel, correo: $("datos-correo").value, aviso_aceptado: true,
+      mensaje: (flujo ? "[Perfilador: " + flujo + ", desde el chat del sitio] " : "[Desde el chat del sitio] ") + resumen };
+    if (flujo) { cuerpo.tipo_operacion = flujo; cuerpo.perfil = respuestas; }
+    fetch("/api/consulta", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(cuerpo) })
+      .then(function (r) { if (!r.ok) throw new Error("x");
+        agrega("asi", "Listo, le pasé su información a Ale. Le escribirá pronto."); flujo = null; muestra("chat-form"); })
+      .catch(function () { agrega("asi", "No pude guardar sus datos. Escríbale a Ale por WhatsApp, por favor."); });
+  });
+
+  // ---------- chat libre ----------
+  $("chat-form").addEventListener("submit", function (e) {
+    e.preventDefault();
+    var t = $("chat-texto").value.trim();
+    if (!t || ocupado) return;
+    $("chat-texto").value = ""; ultimaPregunta = t; ocupado = true; flujo = null;
+    agrega("yo", t);
+    var espera = agrega("asi", "…");
+    fetch("/api/chat", { method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ mensaje: t, historial: historial.slice(-6) }) })
+      .then(function (r) { return r.json().then(function (j) { return { ok: r.ok, status: r.status, j: j }; }); })
+      .then(function (x) {
+        if (x.status === 503) { espera.textContent = "El chat no está disponible por ahora. Escríbale a Ale por WhatsApp, por favor."; return; }
+        var r = x.j.respuesta || "Se lo confirma Ale. Escríbale por WhatsApp, por favor.";
+        espera.textContent = r;
+        historial.push({ rol: "visitante", texto: t }, { rol: "asistente", texto: r });
+        if (x.j.quiere_cita) abreCita();
+        else if (x.j.necesita_ale) muestra("chat-datos");
+      })
+      .catch(function () { espera.textContent = "No pude responder en este momento. Escríbale a Ale por WhatsApp, por favor."; })
+      .then(function () { ocupado = false; msgs.scrollTop = msgs.scrollHeight; });
+  });
+
+  // ---------- pedir visita ----------
+  function abreCita() {
+    muestra("chat-cita");
+    var m = new Date(); m.setDate(m.getDate() + 1);
+    $("cita-fecha").min = m.getFullYear() + "-" + ("0" + (m.getMonth() + 1)).slice(-2) + "-" + ("0" + m.getDate()).slice(-2);
+    if (propsCargadas) return;
+    propsCargadas = true;
+    fetch("/api/propiedades").then(function (r) { return r.ok ? r.json() : []; }).then(function (lista) {
+      var sel = $("cita-prop");
+      (lista || []).forEach(function (p) {
+        var o = document.createElement("option");
+        o.value = p.referencia_publica;
+        o.textContent = [p.colonia || p.desarrollo, p.municipio].filter(Boolean).join(", ") + " · " + (p.tipo_propiedad || "") + " (" + p.referencia_publica + ")";
+        sel.appendChild(o);
+      });
+    }).catch(function () {});
+  }
+  $("chat-agendar").addEventListener("click", function () {
+    abre(); flujo = null;
+    agrega("asi", "Con gusto. Elija la propiedad, el día y la hora que le convienen, y Ale se lo confirma.");
+    abreCita();
+  });
+  $("chat-cita").addEventListener("submit", function (e) {
+    e.preventDefault();
+    var tel = $("cita-tel").value.replace(/\D/g, "");
+    if (tel.length !== 10) { agrega("asi", "Necesito un teléfono de 10 dígitos para que Ale le confirme."); return; }
+    var prop = $("cita-prop").value, fecha = $("cita-fecha").value, hora = $("cita-hora").value;
+    fetch("/api/consulta", { method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ nombre: $("cita-nombre").value, telefono: tel, referencia_propiedad: prop, fecha_cita: fecha, hora_cita: hora, aviso_aceptado: true,
+        mensaje: "[Visita pedida desde el chat del sitio] " + (prop || "propiedad por definir") + " el " + fecha + " a las " + hora }) })
+      .then(function (r) { if (!r.ok) throw new Error("x"); muestra("chat-form");
+        agrega("asi", "Listo, pedí su visita para el " + fecha + " a las " + hora + ". Ale se la confirma por teléfono o WhatsApp."); })
+      .catch(function () { agrega("asi", "No pude guardar su solicitud. Escríbale a Ale por WhatsApp, por favor."); });
+  });
+
+  // ---------- botones del banner ----------
+  document.querySelectorAll("[data-chat]").forEach(function (b) {
+    b.addEventListener("click", function () {
+      var modo = b.getAttribute("data-chat");
+      if (FLUJOS[modo]) inicia(modo);
+      else if (modo === "cita") $("chat-agendar").click();
+      else { abre(); flujo = null; agrega("asi", "Con gusto. Escriba su pregunta abajo."); muestra("chat-form"); }
+    });
+  });
+})();
+</script>
 
 </body>
 </html>
