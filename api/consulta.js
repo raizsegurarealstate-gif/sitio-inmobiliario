@@ -4,7 +4,7 @@
 // Desde 2026-10-25 también guarda correo, tipo de interés (comprar/construir/invertir),
 // plazo, perfil del perfilador y la fecha en que se aceptó el aviso de privacidad.
 const { createClient } = require("@supabase/supabase-js");
-const { normalizar, siguienteAccion } = require("../lib/consulta");
+const { normalizar, siguienteAccion, fechaHoraCita } = require("../lib/consulta");
 
 module.exports = async (req, res) => {
   if (req.method !== "POST") {
@@ -97,7 +97,7 @@ module.exports = async (req, res) => {
       .maybeSingle();
 
     if (propiedad) {
-      const fechaHora = d.fecha_cita + "T" + (d.hora_cita || "12:00") + ":00";
+      const fechaHora = fechaHoraCita(d.fecha_cita, d.hora_cita);
       await supabase.from("citas").insert({
         cliente_id: clienteId,
         propiedad_id: propiedad.id,

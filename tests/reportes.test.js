@@ -31,7 +31,8 @@ test("CSV: BOM, comillas y protección contra fórmulas", () => {
 });
 test("rango de fechas", () => {
   assert.ok(enRango("2026-10-15T12:00:00Z", "2026-10-01", "2026-10-31"));
-  assert.ok(!enRango("2026-11-01T00:00:00Z", "2026-10-01", "2026-10-31"));
+  assert.ok(enRango("2026-11-01T00:00:00Z", "2026-10-01", "2026-10-31")); // 31-oct 18:00 en México: aún es octubre
+  assert.ok(!enRango("2026-11-01T07:00:00Z", "2026-10-01", "2026-10-31")); // 1-nov 01:00 en México
   assert.ok(enRango("2026-11-01", null, null));
 });
 test("reporte de ventas separa directas, colaboración y comisiones", () => {
@@ -56,4 +57,11 @@ test("reporte de clientes cuenta por interés, pago y plazo", () => {
   assert.strictEqual(rep.resumen[0].v, 2);
   assert.ok(rep.resumen.some((x) => x.t === "Interés: construir" && x.v === 1));
   assert.ok(rep.resumen.some((x) => x.t === "Pago: (sin dato)" && x.v === 1));
+});
+const { fechaMx } = require("../lib/reportes");
+test("fechas en hora de México: un contacto de la noche no se pasa al día siguiente", () => {
+  assert.strictEqual(fechaMx("2026-10-27T03:30:00Z"), "2026-10-26");
+  assert.strictEqual(fechaMx("2026-10-27T07:00:00Z"), "2026-10-27");
+  assert.strictEqual(fechaMx("2026-10-24"), "2026-10-24");
+  assert.ok(enRango("2026-10-27T03:30:00Z", "2026-10-26", "2026-10-26"));
 });

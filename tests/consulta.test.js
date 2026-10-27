@@ -33,3 +33,10 @@ test("recorta textos largos y limita el perfil", () => {
   assert.strictEqual(r.datos.mensaje.length, 1000); assert.strictEqual(Object.keys(r.datos.perfil).length, 30);
   assert.strictEqual(r.datos.perfil.k0.length, 300);
 });
+const { fechaHoraCita } = require("../lib/consulta");
+test("la hora de la cita lleva zona horaria del centro de México (no UTC)", () => {
+  assert.strictEqual(fechaHoraCita("2026-10-30", "11:00"), "2026-10-30T11:00:00-06:00");
+  assert.strictEqual(new Date(fechaHoraCita("2026-10-30", "11:00")).toISOString(), "2026-10-30T17:00:00.000Z");
+  assert.strictEqual(fechaHoraCita("2026-10-30", ""), "2026-10-30T12:00:00-06:00");
+  assert.strictEqual(fechaHoraCita("30/10/2026", "11:00"), null);
+});

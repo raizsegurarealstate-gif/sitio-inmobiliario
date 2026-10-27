@@ -22,7 +22,7 @@
     (hijos || []).forEach(function (c) { if (c != null) e.appendChild(typeof c === "string" ? document.createTextNode(c) : c); });
     return e;
   }
-  function fecha(iso) { return iso ? String(iso).slice(0, 10) : ""; }
+  function fecha(iso) { return R.fechaMx(iso); }
   function fechaHora(iso) {
     if (!iso) return "";
     var d = new Date(iso);
@@ -237,7 +237,7 @@
     var tarjetas = h("div", { class: "tarjetas" });
     ultimo.resumen.forEach(function (x) { tarjetas.appendChild(h("div", { class: "tarjeta" }, [h("div", { class: "tv", text: x.dinero ? dinero.format(x.v) : String(x.v) }), h("div", { class: "tt", text: x.t })])); });
     salida.appendChild(tarjetas);
-    salida.appendChild(tabla(ultimo.columnas.map(function (c) { return { t: c.t, f: function (f) { var v = f[c.k]; return v == null ? "" : (c.k.indexOf("fecha") === 0 ? String(v).slice(0, 10) : (typeof v === "object" ? JSON.stringify(v) : String(v))); } }; }), ultimo.filas));
+    salida.appendChild(tabla(ultimo.columnas.map(function (c) { return { t: c.t, f: function (f) { var v = f[c.k]; return v == null ? "" : (c.k.indexOf("fecha") === 0 ? R.fechaMx(v) : (typeof v === "object" ? JSON.stringify(v) : String(v))); } }; }), ultimo.filas));
     $("rep-acciones").style.display = "flex";
   }
   function descargaCsv() {
