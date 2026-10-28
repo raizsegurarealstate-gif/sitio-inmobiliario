@@ -49,3 +49,9 @@ test("responder: pasa quiere_cita cuando el visitante quiere visitar", async () 
   const r = await responder({ mensaje: "quiero ver la casa", props, hoy: "x", llamarModelo });
   assert.ok(r.verificada); assert.strictEqual(r.quiere_cita, true);
 });
+test("verificador bloquea datos internos del manual (comisión, ID operativo, URL original)", () => {
+  assert.ok(verificar("La comisión compartida es del 50%. ¿Le interesa?", permitidas).some((f) => /interna/.test(f)));
+  assert.ok(verificar("Su id operativo es QRO123. ¿Algo más?", permitidas).some((f) => /interna/.test(f)));
+  assert.ok(verificar("La url original es de otro asesor. ¿La ve?", permitidas).some((f) => /interna/.test(f)));
+  assert.deepStrictEqual(verificar("La casa cuesta $2,850,000. ¿Qué presupuesto tiene?", permitidas), []);
+});
